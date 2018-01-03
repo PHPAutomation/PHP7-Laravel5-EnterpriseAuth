@@ -16,6 +16,10 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
         ]);
 
+        $this->mergeConfigFrom(
+            __DIR__.'/config/azure-oath.php', 'azure-oath'
+        );
+
         $this->app['events']->listen(SocialiteWasCalled::class, function (SocialiteWasCalled $socialiteWasCalled) {
             $socialiteWasCalled->extendSocialite(
                 'azure-oauth', __NAMESPACE__.'\AzureOauthProvider'
