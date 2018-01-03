@@ -15,5 +15,12 @@
         "psr-4": {
             "Metrogistic\\AzureSocialite\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Metrogistic\\AzureSocialite\\ServiceProvider"
+            ]
+        }
     }
 }
