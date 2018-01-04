@@ -20,9 +20,10 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/config/azure-oath.php', 'azure-oath'
         );
 
-        $this->app['events']->listen(SocialiteWasCalled::class, function (SocialiteWasCalled $socialiteWasCalled) {
-            $socialiteWasCalled->extendSocialite(
-                'azure-oauth', __NAMESPACE__.'\AzureOauthProvider'
+        $this->app['Laravel\Socialite\Contracts\Factory']->extend('azure-oauth', function($app){
+            return $app['Laravel\Socialite\Contracts\Factory']->buildProvider(
+                'Metrogistic\AzureSocialite\AzureOauthProvider',
+                config('azure-oath.credentials')
             );
         });
 
