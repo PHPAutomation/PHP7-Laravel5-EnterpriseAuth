@@ -2,6 +2,7 @@
 
 namespace Metrogistic\AzureSocialite;
 
+use Illuminate\Support\Arr;
 use Laravel\Socialite\Two\User;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
@@ -39,6 +40,25 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
         ]);
 
         return json_decode($response->getBody(), true);
+    }
+
+    public function user()
+    {
+        if ($this->hasInvalidState()) {
+            throw new InvalidStateException;
+        }
+
+        $response = $this->getAccessTokenResponse($this->getCode());
+
+        $user = $this->mapUserToObject($this->getUserByToken(
+            $token = Arr::get($response, 'access_token')
+        ));
+
+        $user->id_token = Arr::get($response, 'id_token');
+
+        return $user->setToken($token)
+                    ->setRefreshToken(Arr::get($response, 'refresh_token'))
+                    ->setExpiresIn(Arr::get($response, 'expires_in'));
     }
 
     protected function mapUserToObject(array $user)

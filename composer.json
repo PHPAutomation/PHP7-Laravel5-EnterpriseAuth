@@ -20,7 +20,10 @@
         "laravel": {
             "providers": [
                 "Metrogistic\\AzureSocialite\\ServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "AzureUser": "Metrogistic\\AzureSocialite\\AzureUserFacade"
+            }
         }
     }
 }

@@ -8,7 +8,14 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 class ServiceProvider extends BaseServiceProvider
 {
     public function register()
-    {}
+    {
+        $this->app->bind('azure-user', function(){
+            return new AzureUser(
+                session('azure_access_token'),
+                session('azure_id_token')
+            );
+        });
+    }
 
     public function boot()
     {
