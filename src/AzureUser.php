@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistic\AzureSocialite;
+namespace Metrogistics\AzureSocialite;
 
 use Laravel\Socialite\Facades\Socialite;
 

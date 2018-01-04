@@ -7,9 +7,9 @@
 If you are using Laravel 5.5 or greater, the service provider will be detected and installed by Laravel automatically. Otherwise you will need to add the service provider and the facade (optional) to the `config/app.php` file:
 
 ```
-Metrogistic\AzureSocialite\ServiceProvider::class,
+Metrogistics\AzureSocialite\ServiceProvider::class,
 // ...
-'AzureUser' => Metrogistic\AzureSocialite\AzureUserFacade::class,
+'AzureUser' => Metrogistics\AzureSocialite\AzureUserFacade::class,
 ```
 
 Publish the config and override any defaults:
