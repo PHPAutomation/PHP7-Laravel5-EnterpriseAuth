@@ -19,10 +19,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Metrogistic\\AzureSocialite\\ServiceProvider"
+                "Metrogistics\\AzureSocialite\\ServiceProvider"
             ],
             "aliases": {
-                "AzureUser": "Metrogistic\\AzureSocialite\\AzureUserFacade"
+                "AzureUser": "Metrogistics\\AzureSocialite\\AzureUserFacade"
             }
         }
     }
