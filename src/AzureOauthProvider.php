@@ -2,8 +2,9 @@
 
 namespace Metrogistic\AzureSocialite;
 
-use Laravel\Socialite\Two\ProviderInterface;
+use Laravel\Socialite\Two\User;
 use Laravel\Socialite\Two\AbstractProvider;
+use Laravel\Socialite\Two\ProviderInterface;
 
 class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 {
