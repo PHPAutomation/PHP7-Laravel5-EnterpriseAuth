@@ -17,14 +17,14 @@ class AzureUser
 
     public function get()
     {
-        $this->user->setExpiresIn($this->user->expires_at - time());
+        $this->user->setExpiresIn($this->user->expiresAt - time());
 
         return $this->user;
     }
 
     public function roles()
     {
-        $tokens = explode('.', $this->user->id_token);
+        $tokens = explode('.', $this->user->idToken);
 
         return json_decode(static::urlsafeB64Decode($tokens[1]))->roles;
     }
