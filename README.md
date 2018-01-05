@@ -29,6 +29,7 @@ The only changes you should have to make to your application are:
 
 * You will need to make the password field in the users table nullable.
 * You will need to have a `VARCHAR` field on the users table that is 36 characters long to store the Azure AD ID for the user. The default name for the field is `azure_id` but that can be changed in the config file: `'user_id_field' => 'azure_id',`.
+* If you need the Azure AD session to be active (to retrieve the AD user or roles) for logged in users, you will want to replace the default Authenticate middleware with the one provided by this package, this will ensure that the user has recently logged in via their Azure login: `'auth' => \Metrogistics\AzureSocialite\Middleware\Authenticate::class,`
 
 ## Usage
 
