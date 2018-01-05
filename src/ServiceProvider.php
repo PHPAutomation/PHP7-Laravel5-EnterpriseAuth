@@ -11,8 +11,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->app->bind('azure-user', function(){
             return new AzureUser(
-                session('azure_access_token'),
-                session('azure_id_token')
+                session('azure_user')
             );
         });
     }

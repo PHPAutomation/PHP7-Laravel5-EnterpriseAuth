@@ -21,8 +21,7 @@ class AuthController extends Controller
         auth()->login($authUser, true);
 
         session([
-            'azure_access_token' => $user->token,
-            'azure_id_token' => $user->id_token
+            'azure_user' => $user
         ]);
 
         return redirect(

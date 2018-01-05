@@ -10,22 +10,21 @@ class AzureUser
     protected $access_token;
     protected $user;
 
-    public function __construct($access_token, $id_token)
+    public function __construct($user)
     {
-        $this->access_token = $access_token;
-        $this->id_token = $id_token;
-
-        $this->user = Socialite::driver('azure-oauth')->userFromToken($access_token);
+        $this->user = $user;
     }
 
     public function get()
     {
+        $this->user->setExpiresIn($this->user->expires_at - time());
+
         return $this->user;
     }
 
     public function roles()
     {
-        $tokens = explode('.', $this->id_token);
+        $tokens = explode('.', $this->user->id_token);
 
         return json_decode(static::urlsafeB64Decode($tokens[1]))->roles;
     }
