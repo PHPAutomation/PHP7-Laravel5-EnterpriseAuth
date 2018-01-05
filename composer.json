@@ -3,7 +3,8 @@
     "description": "Provides single-sign-on ability to Microsoft Azure Active Directory enabled apps.",
     "require": {
         "laravel/framework": ">5.4",
-        "laravel/socialite": ">3.0"
+        "laravel/socialite": ">3.0",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "authors": [
         {

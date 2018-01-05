@@ -55,6 +55,12 @@ $user = AzureUser::get();
 $roles = AzureUser::roles();
 ```
 
+You can also refresh the access token if need be. Note that this happens automatically whenever the auth middleware is called within 30 minutes of token expiry.
+
+```
+$updated_user_object = AzureUser::refreshAccessToken();
+```
+
 ## Azure AD Setup
 
 1. Navigate to `Azure Active Directory` -> `App registrations`.
