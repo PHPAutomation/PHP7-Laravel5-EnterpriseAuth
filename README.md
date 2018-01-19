@@ -29,7 +29,6 @@ The only changes you should have to make to your application are:
 
 * You will need to make the password field in the users table nullable.
 * You will need to have a `VARCHAR` field on the users table that is 36 characters long to store the Azure AD ID for the user. The default name for the field is `azure_id` but that can be changed in the config file: `'user_id_field' => 'azure_id',`.
-* If you need the Azure AD session to be active (to retrieve the AD user or roles) for logged in users, you will want to replace the default Authenticate middleware with the one provided by this package, this will ensure that the user has recently logged in via their Azure login: `'auth' => \Metrogistics\AzureSocialite\Middleware\Authenticate::class,`
 
 ## Usage
 
@@ -41,24 +40,12 @@ After login, you can access the basic Laravel authenticate user as normal:
 auth()->user();
 ```
 
-You also have access to the socialite user and some additional info via the `azure-user` app binding or the AzureUserFacade:
+If you need to set additional user fields when the user model is created at login, you may provide a callback via the `UserFactory::userCallback()` method. A good place to do so would be in your AppServiceProvider's `boot` method:
 
 ```
-app('azure-user')->get();
-AzureUser::get();
-```
-
-You have access to the user and the user-app roles:
-
-```
-$user = AzureUser::get();
-$roles = AzureUser::roles();
-```
-
-You can also refresh the access token if need be. Note that this happens automatically whenever the auth middleware is called within 30 minutes of token expiry.
-
-```
-$updated_user_object = AzureUser::refreshAccessToken();
+\Metrogistics\AzureSocialite\UserFactory::userCallback(function($new_user){
+	$new_user->api_token = str_random(60);
+});
 ```
 
 ## Azure AD Setup

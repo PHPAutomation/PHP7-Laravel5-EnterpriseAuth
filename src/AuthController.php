@@ -20,9 +20,9 @@ class AuthController extends Controller
 
         auth()->login($authUser, true);
 
-        session([
-            'azure_user' => $user
-        ]);
+        // session([
+        //     'azure_user' => $user
+        // ]);
 
         return redirect(
             config('azure-oath.redirect_on_login')
@@ -38,14 +38,8 @@ class AuthController extends Controller
             return $authUser;
         }
 
-        $id_field = config('azure-oath.user_id_field');
+        $UserFactory = new UserFactory();
 
-        $new_user = new $user_class;
-        $new_user->name = $user->name;
-        $new_user->email = $user->email;
-        $new_user->$id_field = $user->id;
-        $new_user->save();
-
-        return $new_user;
+        return $UserFactory->convertAzureUser($user);
     }
 }

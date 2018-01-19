@@ -20,9 +20,6 @@ return [
         'redirect' => Request::root().'/login/microsoft/callback'
     ],
 
-    // The users table database column to store the user SSO ID.
-    'user_id_field' => 'azure_id',
-
     // The route to redirect the user to upon login.
     'redirect_on_login' => '/home',
 
@@ -31,5 +28,18 @@ return [
 
     // How much time should be left before the access
     // token expires to attempt a refresh.
-    'refresh_token_within' => 30
+    'refresh_token_within' => 30,
+
+    // The users table database column to store the user SSO ID.
+    'user_id_field' => 'azure_id',
+
+    // How to map azure user fields to Laravel user fields.
+    // Do not include the id field above.
+    // AzureUserField => LaravelUserField
+    'user_map' => [
+        'name' => 'name',
+        'email' => 'email',
+        'name' => 'name',
+        'name' => 'name',
+    ]
 ];
