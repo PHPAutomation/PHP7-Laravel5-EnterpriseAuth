@@ -1,5 +1,5 @@
 {
-    "name": "metaclassing/PHP7-Laravel5-EnterpriseAuth",
+    "name": "metaclassing/php7-laravel5-enterpriseauth",
     "description": "Provides authentication, authorization, and accounting for enterprise laravel 5.5+ apps.",
     "require": {
         "laravel/framework": ">5.5",
