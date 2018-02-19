@@ -1,12 +1,20 @@
 {
-    "name": "metrogistics/laravel-azure-ad-oauth",
-    "description": "Provides single-sign-on ability to Microsoft Azure Active Directory enabled apps.",
+    "name": "metaclassing/PHP7-Laravel5-EnterpriseAuth",
+    "description": "Provides authentication, authorization, and accounting for enterprise laravel 5.5+ apps.",
     "require": {
-        "laravel/framework": ">5.4",
+        "laravel/framework": ">5.5",
         "laravel/socialite": ">3.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "doctrine/dbal": "^2.5",
+        "tymon/jwt-auth": "^0.5.12",
+        "silber/bouncer": "v1.0.0-rc.1",
+        "owen-it/laravel-auditing": "^6.0"
     },
     "authors": [
+        {
+            "name": "metaclassing",
+            "email": "metaclassing@secureobscure.com"
+        },
         {
             "name": "Patrick Stephan",
             "email": "patrick.stephan@metrogistics.com"
