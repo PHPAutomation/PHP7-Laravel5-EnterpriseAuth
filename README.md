@@ -2,35 +2,31 @@
 
 ## Installation
 
-`composer require metrogistics/laravel-azure-ad-oauth`
-
-If you are using Laravel 5.5 or greater, the service provider will be detected and installed by Laravel automatically. Otherwise you will need to add the service provider and the facade (optional) to the `config/app.php` file:
-
-```
-Metrogistics\AzureSocialite\ServiceProvider::class,
-// ...
-'AzureUser' => Metrogistics\AzureSocialite\AzureUserFacade::class,
-```
+`composer require metaclassing/php7-laravel5-enterpriseauth`
 
 Publish the config and override any defaults:
 
 ```
-php artisan vendor publish
+php artisan vendor publish --tag 'i will decide what to put here later'
 ```
 
-Add the necessary env vars:
+Add the necessary env vars for Azure Active Directory OAUTH:
 
 ```
-AZURE_AD_CLIENT_ID=XXXX
-AZURE_AD_CLIENT_SECRET=XXXX
+AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
+AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
+AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
+^--- this one I will remove once I get the route named something sane.
 ```
 
-The only changes you should have to make to your application are:
+I have a published migration that needs to run altering the user table:
+  user password is nullable()
+  user has an azure_id string(36) attribute
 
-* You will need to make the password field in the users table nullable.
-* You will need to have a `VARCHAR` field on the users table that is 36 characters long to store the Azure AD ID for the user. The default name for the field is `azure_id` but that can be changed in the config file: `'user_id_field' => 'azure_id',`.
 
-## Usage
+
+
+## Cookie thick browser client usage
 
 All you need to do to make use of Azure AD SSO is to point a user to the `/login/microsoft` route (configurable) for login. Once a user has been logged in, they will be redirect to the home page (also configurable).
 
@@ -50,6 +46,10 @@ If you need to set additional user fields when the user model is created at logi
 
 ## Azure AD Setup
 
+TL;DR - Run the runbook in azure that creates a new aad app with unlimited key timeout and access to view user groups.
+
+Manual setup instructions:
+
 1. Navigate to `Azure Active Directory` -> `App registrations`.
 2. Create a new application
   1. Choose a name
@@ -60,26 +60,5 @@ If you need to set additional user fields when the user model is created at logi
 4. The "Application ID" is what you will need for your `AZURE_AD_CLIENT_ID` env variable.
 5. Click into "Reply URLs". You will need to whitelist the redirection path for your app here. It will typically be `https://domain.com/login/microsoft/callback`. Click "Save"
 6. Select the permissions required for you app in the "Required permissions" tab.
-7. Add any necessary roles to the manifest:
-  1. Click on the "Manifest" tab.
-  2. Add roles as necessary using the following format:
-
-		```
-		"appRoles": [
-		    {
-		      "allowedMemberTypes": [
-		        "User"
-		      ],
-		      "displayName": "Manager Role",
-		      "id": "08b0e9e3-8d88-4d99-b630-b9642a70f51e",// Any unique GUID
-		      "isEnabled": true,
-		      "description": "Manage stuff with this role",
-		      "value": "manager"
-		    }
-		  ],
-		```
-  3. Click "Save"
 8. In the "Keys" tab, enter a description (something like "App Secret"). Set Duration to "Never Expires". Click "Save". Copy the whole key. This will not show again. You will need this value for the `AZURE_AD_CLIENT_SECRET` env variable.
-9. Click on the "Managed application" link (It will be the name of the application);
-10. Under the "Properties" tab, enable user sign-in. Make user assignment required. Click "Save".
-11. Under the "Users and groups" tab, add users and their roles as needed.
+over9000: there are some steps here missing to pre-authorize user access to the app and what permissions it has without prompting.
