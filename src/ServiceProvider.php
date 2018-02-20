@@ -30,10 +30,7 @@ class ServiceProvider extends BaseServiceProvider
         $userModelHash = md5($userModelData);
         // ONLY REPLACE THE ACTUAL DEFAULT User.php file, dont replace it multiple times!
         if ($userModelHash == '15f19dad7b287f9204dbe2b34dd424d7') {
-            echo $userModelFile.' hash '.$userModelHash.' is default, removing it for replacement'.PHP_EOL;
             unlink($userModelFile);
-        } else {
-            echo $userModelFile.' hash '.$userModelHash.' not default contents, leaving it alone'.PHP_EOL;
         }
 
         $this->publishes([
