@@ -7,6 +7,10 @@
 Publish the config and override any defaults:
 
 ```
+#JWT Authentication lib - currently running dev branch for 5.5 support
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+php artisan jwt:secret
+# Metrogistics AzureSocialite lib - currently base of this fork
 php artisan vendor publish --tag 'i will decide what to put here later'
 ```
 

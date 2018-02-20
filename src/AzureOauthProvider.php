@@ -67,6 +67,11 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
             'id'                => $user['id'],
             'name'              => $user['displayName'],
             'email'             => $user['mail'],
+            // This is important to leverage tools like Tymon/JWTAuth,
+            // DO NOT permit local user logins with blank passwords
+            'password'          => bcrypt(''),
+            // UPN is the primary identifier for most Micro$dollar$ stuff
+            'userPrincipalName' => $user['userPrincipalName'],
 
             'businessPhones'    => $user['businessPhones'],
             'displayName'       => $user['displayName'],
@@ -77,7 +82,6 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
             'officeLocation'    => $user['officeLocation'],
             'preferredLanguage' => $user['preferredLanguage'],
             'surname'           => $user['surname'],
-            'userPrincipalName' => $user['userPrincipalName'],
         ]);
     }
 }
