@@ -42,6 +42,38 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
         return json_decode($response->getBody(), true);
     }
 
+    protected function getUserGroupsByToken($token)
+    {
+        $response = $this->getHttpClient()->get('https://graph.microsoft.com/v1.0/me/memberOf/', [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+            ],
+        ]);
+        return json_decode($response->getBody(), true);
+    }
+
+    protected function groups($token)
+    {
+        $groups = [];
+        try {
+        // try updating users bouncer permissions
+            $azureadgroups = $this->getUserGroupsByToken($token);
+            // only proceed if we got a good response with group info
+            if (isset($azureadgroups['value']) && count($azureadgroups['value'])) {
+                foreach($azureadgroups['value'] as $group) {
+                    $groups[] = $group['displayName'];
+                }
+            }
+        } catch (\GuzzleHttp\Exception\ClientException  $e) {
+            // This is usually due to insufficient permissions on the azure ad app
+            throw new \Exception('This AzureAD application does not seem to have permission to view user groups. Did you configure that permission in AzureAD correctly? '.$e->getMessage());
+        } catch (\Exception $e) {
+            // I have no idea what would cause other exceptions yet
+            throw $e;
+        }
+        return $groups;
+    }
+
     public function user()
     {
         if ($this->hasInvalidState()) {
@@ -50,10 +82,9 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 
         $response = $this->getAccessTokenResponse($this->getCode());
 
-        $user = $this->mapUserToObject($this->getUserByToken(
-            $token = Arr::get($response, 'access_token')
-        ));
-
+        $token = Arr::get($response, 'access_token');
+        $user = $this->mapUserToObject($this->getUserByToken($token));
+        $user->groups = $this->groups($token);
         $user->idToken = Arr::get($response, 'id_token');
         $user->expiresAt = time() + Arr::get($response, 'expires_in');
 

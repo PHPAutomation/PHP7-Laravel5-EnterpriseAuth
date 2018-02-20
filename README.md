@@ -8,6 +8,8 @@ composer create-project --prefer-dist laravel/laravel laravel55 "5.5.*"
 cd laravel55
 # EDIT YOUR .ENV FILE for things like database connection creds etc.
 php artisan migrate
+# make sure your permissions are correct so the app works
+chown -R www-data .
 
 ```
 
@@ -24,12 +26,16 @@ Publish the config and override any defaults:
 
 ```
 # Metrogistics AzureSocialite lib - currently base of this fork
-# Also creates migration for user table and publishes user model to app dir
 php artisan vendor:publish --provider="Metrogistics\AzureSocialite\ServiceProvider"
 php artisan migrate
-#JWT Authentication lib - currently running dev branch for 5.5 support
+
+# JWT Authentication lib - currently running dev branch for 5.5 support
 php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
 php artisan jwt:secret
+
+# Bouncer Authorization lib
+php artisan vendor:publish --tag="bouncer.migrations"
+php artisan migrate
 ```
 
 Add the necessary env vars for Azure Active Directory OAUTH:
@@ -40,10 +46,6 @@ AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
 AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
 ^--- this one I will remove once I get the route named something sane.
 ```
-
-I have a published migration that needs to run altering the user table:
-  user password is nullable()
-  user has an azure_id string(36) attribute
 
 
 

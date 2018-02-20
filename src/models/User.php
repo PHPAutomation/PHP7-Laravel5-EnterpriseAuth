@@ -11,6 +11,7 @@ class User extends Authenticatable implements \Illuminate\Contracts\Auth\Authent
                                               \Tymon\JWTAuth\Contracts\JWTSubject
 {
     use Notifiable;
+    use \Silber\Bouncer\Database\HasRolesAndAbilities;
 
     /**
      * The attributes that are mass assignable.
