@@ -25,10 +25,21 @@ class ServiceProvider extends BaseServiceProvider
         //     return new Authenticate();
         // });
 
+        $userModelFile = app_path().'/User.php';
+        $userModelData = file_get_contents($userModelFile);
+        $userModelHash = md5($userModelData);
+        // ONLY REPLACE THE ACTUAL DEFAULT User.php file, dont replace it multiple times!
+        if ($userModelHash == '15f19dad7b287f9204dbe2b34dd424d7') {
+            echo $userModelFile.' hash '.$userModelHash.' is default, removing it for replacement'.PHP_EOL;
+            unlink($userModelFile);
+        } else {
+            echo $userModelFile.' hash '.$userModelHash.' not default contents, leaving it alone'.PHP_EOL;
+        }
+
         $this->publishes([
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
             __DIR__.'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
-            __DIR__.'/models/User.php' => app_path().'/User.php',
+            __DIR__.'/models/User.php' => $userModelFile,
         ]);
 
         $this->mergeConfigFrom(
