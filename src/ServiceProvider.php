@@ -28,7 +28,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
             __DIR__.'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
-            __DIR__.'/models/User.php' => $this->app->basePath().'/app/User.php',
+            __DIR__.'/models/User.php' => app_path().'/app/User.php',
         ]);
 
         $this->mergeConfigFrom(

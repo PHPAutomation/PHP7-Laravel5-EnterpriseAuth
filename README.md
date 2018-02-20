@@ -1,8 +1,24 @@
 # Laravel Socialite Azure Active Directory Plugin
 
+## PRE INSTALLATION
+
+Make sure you dont have any outstanding migrations, this assumes you are installing from a FRESH laravel 5.5 project
+```
+composer create-project --prefer-dist laravel/laravel laravel55 "5.5.*"
+cd laravel55
+# EDIT YOUR .ENV FILE for things like database connection creds etc.
+php artisan migrate
+
+```
+
 ## Installation
 
-`composer require metaclassing/php7-laravel5-enterpriseauth`
+This is a dev package, your minimum stability must support this:
+```
+composer config minimum-stability dev
+composer config prefer-stable true
+composer require metaclassing/php7-laravel5-enterpriseauth
+```
 
 Publish the config and override any defaults:
 
