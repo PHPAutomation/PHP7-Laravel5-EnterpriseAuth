@@ -33,6 +33,13 @@ class ServiceProvider extends BaseServiceProvider
             unlink($userModelFile);
         }
 
+        // change the api auth guard to jwt rather than default of token
+        config([ 'auth.guards.api' => [
+                'driver' => 'jwt',
+                'provider' => 'users',
+            ],
+        ]);
+
         $this->publishes([
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
             __DIR__.'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
@@ -52,8 +59,22 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->app['router']->group(['middleware' => config('azure-oath.routes.middleware')], function($router){
             $router->get(config('azure-oath.routes.login'), 'Metrogistics\AzureSocialite\AuthController@redirectToOauthProvider');
-            $router->get(config('azure-oath.routes.apilogin'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
             $router->get(config('azure-oath.routes.callback'), 'Metrogistics\AzureSocialite\AuthController@handleOauthResponse');
+            $router->get(config('azure-oath.routes.apilogin'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
+            $router->post(config('azure-oath.routes.apilogin'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
+            $router->get('/api/me/', 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserInfo');
+            $router->get('/api/me/roles', 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserRoles');
         });
+
+        // Unauthenticated api route
+        $this->app['router']->group(['middleware' => config('azure-oath.apiroutes.middleware')], function($router){
+            $router->get(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
+            $router->post(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
+        });
+        $this->app['router']->group(['middleware' => [ config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware') ] ], function($router){
+            $router->get(config('azure-oath.apiroutes.myinfo'), 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserInfo');
+            $router->get(config('azure-oath.apiroutes.myroles'), 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserRoles');
+        });
+
     }
 }

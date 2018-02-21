@@ -10,12 +10,19 @@ return [
         // There should be no reason to override this.
         'login' => 'login/microsoft',
 
-        // And now for something completely different
-        'apilogin' => 'api/login/microsoft',
-
         // The app route that SSO will redirect to.
         // There should be no reason to override this.
         'callback' => 'login/microsoft/callback',
+    ],
+    // And now for something completely different
+    'apiroutes' => [
+        // dont use web
+        'middleware' => 'api',
+        'authmiddleware' => 'auth:api',
+        // and the routes
+        'login' => 'api/login/microsoft',
+        'myinfo' => 'api/me',
+        'myroles' => 'api/me/roles',
     ],
     'credentials' => [
         'client_id' => env('AZURE_AD_CLIENT_ID', ''),

@@ -166,4 +166,17 @@ class AuthController extends Controller
         return $UserFactory->convertAzureUser($user);
     }
 
+    public function getAuthorizedUserInfo(\Illuminate\Http\Request $request)
+    {
+        $user = auth()->user();
+        return response()->json($user);
+    }
+
+    public function getAuthorizedUserRoles(\Illuminate\Http\Request $request)
+    {
+        $user = auth()->user();
+        $roles = $user->roles()->get();
+        return response()->json($roles);
+    }
+
 }
