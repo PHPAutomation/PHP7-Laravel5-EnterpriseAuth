@@ -34,11 +34,8 @@ class ServiceProvider extends BaseServiceProvider
         }
 
         // change the api auth guard to jwt rather than default of token
-        config([ 'auth.guards.api' => [
-                'driver' => 'jwt',
-                'provider' => 'users',
-            ],
-        ]);
+        //config(['auth.guards.api.driver' => 'jwt']);
+        //dd(config('auth.guards.api'));
 
         $this->publishes([
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
