@@ -71,11 +71,17 @@ class AuthController extends Controller
             }
         }
 
-        $credentials = [
-                           'id' => $authUser->id,
-                           'password' => ''
-                       ];
-        return \JWTAuth::attempt($credentials);
+        $credentials = [ 'id' => $authUser->id, 'password' => '' ];
+        try {
+            // This should NEVER fail.
+            if (! $token = \JWTAuth::attempt($credentials)) {
+                abort(401, 'JWT Authentication failure');
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could_not_create_token'], 500);
+        }
+
+        return response()->json(compact('token'));
     }
 
     public function getUserByToken($token)
