@@ -52,6 +52,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->app['router']->group(['middleware' => config('azure-oath.routes.middleware')], function($router){
             $router->get(config('azure-oath.routes.login'), 'Metrogistics\AzureSocialite\AuthController@redirectToOauthProvider');
+            $router->get(config('azure-oath.routes.apilogin'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
             $router->get(config('azure-oath.routes.callback'), 'Metrogistics\AzureSocialite\AuthController@handleOauthResponse');
         });
     }

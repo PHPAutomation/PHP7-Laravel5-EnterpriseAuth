@@ -44,6 +44,108 @@ class AuthController extends Controller
         );
     }
 
+    public function handleApiOauthLogin(\Illuminate\Http\Request $request)
+    {
+        $token = $request->input('access_token');
+        if (!$token) {
+            throw new \Exception('error: access_token is missing');
+        }
+
+        $user = $this->mapUserToObject($this->getUserByToken($token));
+        $user->groups = $this->groups($token);
+        //dd($user);
+
+        $authUser = $this->findOrCreateUser($user);
+
+        // If we have user group information from this oauth attempt
+        if(count($user->groups)) {
+            // remove the users existing database roles before assigning new ones
+            $oldroles = $authUser->roles()->get();
+            foreach ($oldroles as $role) {
+                $authUser->retract($role);
+            }
+            // add the user to each group they are assigned
+            $newroles = $user->groups;
+            foreach ($newroles as $role) {
+                $authUser->assign($role);
+            }
+        }
+
+        $credentials = [
+                           'id' => $authUser->id,
+                           'password' => ''
+                       ];
+        return \JWTAuth::attempt($credentials);
+    }
+
+    public function getUserByToken($token)
+    {
+        $guzzle = new \GuzzleHttp\Client();
+
+        $response = $guzzle->get('https://graph.microsoft.com/v1.0/me/', [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+            ],
+        ]);
+
+        return json_decode($response->getBody(), true);
+    }
+
+    protected function getUserGroupsByToken($token)
+    {
+        $guzzle = new \GuzzleHttp\Client();
+
+        $response = $guzzle->get('https://graph.microsoft.com/v1.0/me/memberOf/', [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+            ],
+        ]);
+        return json_decode($response->getBody(), true);
+    }
+
+    protected function groups($token)
+    {
+        $groups = [];
+        try {
+        // try updating users bouncer permissions
+            $azureadgroups = $this->getUserGroupsByToken($token);
+            // only proceed if we got a good response with group info
+            if (isset($azureadgroups['value']) && count($azureadgroups['value'])) {
+                foreach($azureadgroups['value'] as $group) {
+                    $groups[] = $group['displayName'];
+                }
+            }
+        } catch (\GuzzleHttp\Exception\ClientException  $e) {
+            // This is usually due to insufficient permissions on the azure ad app
+            throw new \Exception('This AzureAD application does not seem to have permission to view user groups. Did you configure that permission in AzureAD correctly? '.$e->getMessage());
+        } catch (\Exception $e) {
+            // I have no idea what would cause other exceptions yet
+            throw $e;
+        }
+        return $groups;
+    }
+
+    protected function mapUserToObject(array $user)
+    {
+        return (new \Laravel\Socialite\Two\User())->setRaw($user)->map([
+            'id'                => $user['id'],
+            'name'              => $user['displayName'],
+            'email'             => $user['mail'],
+            'password'          => '',
+
+            'businessPhones'    => $user['businessPhones'],
+            'displayName'       => $user['displayName'],
+            'givenName'         => $user['givenName'],
+            'jobTitle'          => $user['jobTitle'],
+            'mail'              => $user['mail'],
+            'mobilePhone'       => $user['mobilePhone'],
+            'officeLocation'    => $user['officeLocation'],
+            'preferredLanguage' => $user['preferredLanguage'],
+            'surname'           => $user['surname'],
+            'userPrincipalName' => $user['userPrincipalName'],
+        ]);
+    }
+
     protected function findOrCreateUser($user)
     {
         $user_class = config('azure-oath.user_class');
@@ -58,8 +160,4 @@ class AuthController extends Controller
         return $UserFactory->convertAzureUser($user);
     }
 
-    protected function updateUserGroups($user)
-    {
-        dd($user);
-    }
 }
