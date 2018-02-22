@@ -72,6 +72,13 @@ class ServiceProvider extends BaseServiceProvider
             $router->get(config('azure-oath.apiroutes.myinfo'), 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserInfo');
             $router->get(config('azure-oath.apiroutes.myroles'), 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserRoles');
         });
-
+        // This handles a situation where a route with the NAME of login does not exist, we define it to keep from breaking framework redirects hard coded
+        if (! \Route::has('login') ) {
+            $this->app['router']->get('unauthorized', function(\Illuminate\Http\Request $request) {
+                return $request->expectsJson()
+                    ? response()->json(['message' => $exception->getMessage()], 401)
+                    : redirect()->guest(config('azure-oath.routes.login'));
+            })->name('login');
+        }
     }
 }
