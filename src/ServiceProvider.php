@@ -55,22 +55,19 @@ class ServiceProvider extends BaseServiceProvider
         });
 
         $this->app['router']->group(['middleware' => config('azure-oath.routes.middleware')], function($router){
-            $router->get(config('azure-oath.routes.login'), 'Metrogistics\AzureSocialite\AuthController@redirectToOauthProvider');
-            $router->get(config('azure-oath.routes.callback'), 'Metrogistics\AzureSocialite\AuthController@handleOauthResponse');
-            $router->get(config('azure-oath.routes.apilogin'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
-            $router->post(config('azure-oath.routes.apilogin'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
-            $router->get('/api/me/', 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserInfo');
-            $router->get('/api/me/roles', 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserRoles');
+            $router->get(config('azure-oath.routes.login'), 'Metrogistics\AzureSocialite\WebAuthController@redirectToOauthProvider');
+            $router->get(config('azure-oath.routes.callback'), 'Metrogistics\AzureSocialite\WebAuthController@handleOauthResponse');
         });
 
         // Unauthenticated api route
         $this->app['router']->group(['middleware' => config('azure-oath.apiroutes.middleware')], function($router){
-            $router->get(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
-            $router->post(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\AuthController@handleApiOauthLogin');
+            $router->get(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleOauthLogin');
+            $router->post(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleApiOauthLogin');
         });
         $this->app['router']->group(['middleware' => [ config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware') ] ], function($router){
-            $router->get(config('azure-oath.apiroutes.myinfo'), 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserInfo');
-            $router->get(config('azure-oath.apiroutes.myroles'), 'Metrogistics\AzureSocialite\AuthController@getAuthorizedUserRoles');
+            $router->get(config('azure-oath.apiroutes.myinfo'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserInfo');
+            $router->get(config('azure-oath.apiroutes.myroles'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserRoles');
+            $router->get(config('azure-oath.apiroutes.myrolespermissions'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserRolesAbilities');
         });
         // This handles a situation where a route with the NAME of login does not exist, we define it to keep from breaking framework redirects hard coded
         if (! \Route::has('login') ) {

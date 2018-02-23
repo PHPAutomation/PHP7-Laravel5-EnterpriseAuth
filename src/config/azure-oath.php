@@ -23,6 +23,7 @@ return [
         'login' => 'api/login/microsoft',
         'myinfo' => 'api/me',
         'myroles' => 'api/me/roles',
+        'myrolespermissions' => 'api/me/roles/permissions',
     ],
     'credentials' => [
         'client_id' => env('AZURE_AD_CLIENT_ID', ''),
