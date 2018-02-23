@@ -22,4 +22,11 @@ class AuthController extends Controller
         return $UserFactory->convertAzureUser($user);
     }
 
+    public function loginOrRegister (\Illuminate\Http\Request $request)
+    {
+        return $request->expectsJson()
+               ? response()->json(['message' => $exception->getMessage()], 401)
+               : redirect()->guest(config('azure-oath.routes.login'));
+    }
+
 }

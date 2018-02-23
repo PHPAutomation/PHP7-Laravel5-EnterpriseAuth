@@ -77,11 +77,10 @@ class ServiceProvider extends BaseServiceProvider
         });
         // This handles a situation where a route with the NAME of login does not exist, we define it to keep from breaking framework redirects hard coded
         if (! \Route::has('login') ) {
-            $this->app['router']->get('unauthorized', function(\Illuminate\Http\Request $request) {
-                return $request->expectsJson()
-                    ? response()->json(['message' => $exception->getMessage()], 401)
-                    : redirect()->guest(config('azure-oath.routes.login'));
-            })->name('login');
+            $this->app['router']->get('login', Metrogistics\AzureSocialite\AuthController@loginOrRegister)->name('login');
+        }
+        if (! \Route::has('register') ) {
+            $this->app['router']->get('register', Metrogistics\AzureSocialite\AuthController@loginOrRegister)->name('register');
         }
     }
 }
