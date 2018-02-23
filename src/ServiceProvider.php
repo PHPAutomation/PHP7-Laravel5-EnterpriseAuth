@@ -33,7 +33,6 @@ class ServiceProvider extends BaseServiceProvider
             try {
                 \Log::debug('Detected default User.php model, replacing with enhanced model...');
                 copy(__DIR__.'/models/User.php', $userModelFile);
-                unlink($userModelFile);
                 \Log::debug('Default User.php model replaced successfully');
             } catch (\Throwable $e) {
                 \Log::debug('Detected default User.php model but replacement failed, '.$e->getMessage());
