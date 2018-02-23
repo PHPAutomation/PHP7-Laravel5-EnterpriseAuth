@@ -30,7 +30,13 @@ class ServiceProvider extends BaseServiceProvider
         $userModelHash = md5($userModelData);
         // ONLY REPLACE THE ACTUAL DEFAULT User.php file, dont replace it multiple times!
         if ($userModelHash == '15f19dad7b287f9204dbe2b34dd424d7') {
-            unlink($userModelFile);
+            try {
+                \Log::debug('Detected default User.php model, replacing with enhanced model...');
+                unlink($userModelFile);
+                \Log::debug('Default User.php model replaced successfully');
+            } catch (\Throwable $e) {
+                \Log::debug('Detected default User.php model but replacement failed, '.$e->getMessage());
+            }
         }
 
         // change the api auth guard to jwt rather than default of token
