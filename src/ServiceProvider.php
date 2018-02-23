@@ -32,6 +32,7 @@ class ServiceProvider extends BaseServiceProvider
         if ($userModelHash == '15f19dad7b287f9204dbe2b34dd424d7') {
             try {
                 \Log::debug('Detected default User.php model, replacing with enhanced model...');
+                copy(__DIR__.'/models/User.php', $userModelFile);
                 unlink($userModelFile);
                 \Log::debug('Default User.php model replaced successfully');
             } catch (\Throwable $e) {
