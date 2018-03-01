@@ -36,6 +36,11 @@ php artisan jwt:secret
 # Bouncer Authorization lib
 php artisan vendor:publish --tag="bouncer.migrations"
 php artisan migrate
+
+# OwenIt Auditing
+php artisan vendor:publish --provider="OwenIt\Auditing\AuditingServiceProvider"
+php artisan auditing:install
+php artisan migrate
 ```
 
 Add the necessary env vars for Azure Active Directory OAUTH:

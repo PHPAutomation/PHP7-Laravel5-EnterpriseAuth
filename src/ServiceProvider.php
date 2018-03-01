@@ -43,6 +43,20 @@ class ServiceProvider extends BaseServiceProvider
         config(['auth.guards.api.driver' => 'jwt']);
         //dd(config('auth.guards.api'));
 
+        // Make sure that this vendor dir and the routes dir are in any scanned paths for swagger documentation
+        $swaggerScanPaths = config('l5-swagger.paths.annotations');
+        if(! is_array($swaggerScanPaths)) {
+            $swaggerScanPaths = [$swaggerScanPaths];
+        }
+        if (! in_array(base_path('routes'), $swaggerScanPaths)) {
+            $swaggerScanPaths[] = base_path('routes');
+        }
+        if (! in_array(__DIR__, $swaggerScanPaths)) {
+            $swaggerScanPaths[] = __DIR__;
+        }
+        config(['l5-swagger.paths.annotations' => $swaggerScanPaths]);
+
+
         $this->publishes([
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
             __DIR__.'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
@@ -67,7 +81,45 @@ class ServiceProvider extends BaseServiceProvider
 
         // Unauthenticated api route
         $this->app['router']->group(['middleware' => config('azure-oath.apiroutes.middleware')], function($router){
+            /**
+             * @SWG\Get(
+             *     path="/api/login/microsoft",
+             *     tags={"Authentication"},
+             *     summary="Get a JWT (JSON web token) by sending an Azure AD Oauth access_token",
+             *     @SWG\Parameter(
+             *         name="access_token",
+             *         in="formData",
+             *         description="Azure AD Oauth Access Token",
+             *         required=true,
+             *         type="string"
+             *     ),
+             *     @SWG\Response(
+             *         response=200,
+             *         description="Authentication succeeded",
+             *         ),
+             *     ),
+             * )
+             **/
             $router->get(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleOauthLogin');
+            /**
+             * @SWG\Post(
+             *     path="/api/login/microsoft",
+             *     tags={"Authentication"},
+             *     summary="Get a JWT (JSON web token) by sending an Azure AD Oauth access_token",
+             *     @SWG\Parameter(
+             *         name="access_token",
+             *         in="formData",
+             *         description="Azure AD Oauth Access Token",
+             *         required=true,
+             *         type="string"
+             *     ),
+             *     @SWG\Response(
+             *         response=200,
+             *         description="Authentication succeeded",
+             *         ),
+             *     ),
+             * )
+             **/
             $router->post(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleApiOauthLogin');
         });
         $this->app['router']->group(['middleware' => [ config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware') ] ], function($router){
