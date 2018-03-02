@@ -26,7 +26,7 @@ Publish the config and override any defaults:
 
 ```
 # Metrogistics AzureSocialite lib - currently base of this fork
-php artisan vendor:publish --provider="Metrogistics\AzureSocialite\ServiceProvider"
+php artisan vendor:publish --provider="Metrogistics\AzureSocialite\ServiceProvider" --force
 php artisan migrate
 
 # JWT Authentication lib - currently running dev branch for 5.5 support
