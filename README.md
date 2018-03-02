@@ -54,9 +54,83 @@ AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
 AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
 ^--- this one I will remove once I get the route named something sane.
 ```
+## Bouncer group-based authorization
+By default when a user authenticates their group information is populated into the bouncer roles list using group display name properties.
+Quick shortcuts to grant permissions to roles(groups) based on model type or instance
+```
+// ROLES (group display name in AD)
+$roles = [
+             'Enterprise.Architecture',
+             'IMTelecom',
+         ];
 
+// TYPES of things (all instances)
+$types = [
+             App\Thing::class,
+             App\OtherThing::class,
+         ];
 
+// PERMISSIONS the role can do to the type of thing, this goes in your controller
+$tasks = [
+             "create",
+             "read",
+             "update",
+             "delete",
+             "suckit",
+         ];
 
+// Let those roles/groups do tasks to things.
+foreach($roles as $role) {
+    foreach($types as $type) {
+        foreach($tasks as $task) {
+            Bouncer::allow($role)->to($task, $type);
+        }
+    }
+}
+```
+
+If you want to do SPECIFIC INSTANCES of an object rather than ALL of type X
+```
+// TYPES of things (all instances)
+$stuff = [
+             \App\Thing::find(2),
+             \App\OtherThing::find(16),
+         ];
+
+// Let those roles/groups do tasks to SPECIFIC INSTANCES of things.
+foreach($roles as $role) {
+    foreach($stuff as $thing) {
+        foreach($tasks as $task) {
+            Bouncer::allow($role)->to($task, $thing);
+        }
+   }
+}
+```
+In your controller you will need to ensure your user is authenticated, and then check if they can do 'permission' to typeOfModel::class OR $instanceOfModel
+```
+    public function myHttpControllerRandomApiFunction(Request $request)
+    {
+        // authenticate the user
+        $user = auth()->user();
+
+        // permission check on specific $thing
+        $thing = \App\Crud::find(123);
+        if ($user->cant('suckit', $thing)) {
+            return response()->json(['error' => 'user cant suck this'], 401);
+        }
+
+        // permission check on all things of typeOfModel
+        if ($user->cant('suckit', \App\CrudModel::class)) {
+            return response()->json(['error' => 'user cant suck this'], 401);
+        }
+
+        // suck it.
+        $thing->suck('it');
+
+        // send some response
+        return response()->json($roles);
+    }
+```
 
 ## Cookie thick browser client usage
 
@@ -78,7 +152,7 @@ If you need to set additional user fields when the user model is created at logi
 
 ## Azure AD Setup
 
-TL;DR - Run the runbook in azure that creates a new aad app with unlimited key timeout and access to view user groups.
+TL;DR - Have somebody execute the runbook in azure that creates a new aad app with unlimited key timeout and access to view user groups.
 
 Manual setup instructions:
 
@@ -93,4 +167,4 @@ Manual setup instructions:
 5. Click into "Reply URLs". You will need to whitelist the redirection path for your app here. It will typically be `https://domain.com/login/microsoft/callback`. Click "Save"
 6. Select the permissions required for you app in the "Required permissions" tab.
 8. In the "Keys" tab, enter a description (something like "App Secret"). Set Duration to "Never Expires". Click "Save". Copy the whole key. This will not show again. You will need this value for the `AZURE_AD_CLIENT_SECRET` env variable.
-over9000: there are some steps here missing to pre-authorize user access to the app and what permissions it has without prompting.
+over9000: there are some steps here missing to pre-authorize user access to the app and what permissions it has without prompting. It needs the ability to see all the users GROUP membership
