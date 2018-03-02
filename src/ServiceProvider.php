@@ -53,22 +53,19 @@ class ServiceProvider extends BaseServiceProvider
         if (! in_array(base_path('routes'), $swaggerScanPaths)) {
             $swaggerScanPaths[] = base_path('routes');
         }
-        /*
-        if (! in_array(__DIR__, $swaggerScanPaths)) {
-            $swaggerScanPaths[] = __DIR__;
+        if (! in_array(__DIR__.'/../routes/', $swaggerScanPaths)) {
+            $swaggerScanPaths[] = __DIR__.'/../routes/';
         }
-        */
         config(['l5-swagger.paths.annotations' => $swaggerScanPaths]);
 
-
         $this->publishes([
-            __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
-            __DIR__.'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
-            __DIR__.'/models/User.php' => app_path().'/User.php',
+            __DIR__.'/../publish/config/azure-oath.php' => config_path('azure-oath.php'),
+            __DIR__.'/../publish/database/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
+            __DIR__.'/../publish/app/User.php' => app_path().'/User.php',
         ]);
 
         $this->mergeConfigFrom(
-            __DIR__.'/config/azure-oath.php', 'azure-oath'
+            __DIR__.'/../publish/config/azure-oath.php', 'azure-oath'
         );
 
         $this->app['Laravel\Socialite\Contracts\Factory']->extend('azure-oauth', function($app){
@@ -78,65 +75,7 @@ class ServiceProvider extends BaseServiceProvider
             );
         });
 
-        $this->app['router']->group(['middleware' => config('azure-oath.routes.middleware')], function($router){
-            $router->get(config('azure-oath.routes.login'), 'Metrogistics\AzureSocialite\WebAuthController@redirectToOauthProvider');
-            $router->get(config('azure-oath.routes.callback'), 'Metrogistics\AzureSocialite\WebAuthController@handleOauthResponse');
-        });
-
-        // Unauthenticated api route
-        $this->app['router']->group(['middleware' => config('azure-oath.apiroutes.middleware')], function($router){
-            /**
-             * @SWG\Get(
-             *     path="/api/login/microsoft",
-             *     tags={"Authentication"},
-             *     summary="Get a JWT (JSON web token) by sending an Azure AD Oauth access_token",
-             *     @SWG\Parameter(
-             *         name="access_token",
-             *         in="formData",
-             *         description="Azure AD Oauth Access Token",
-             *         required=true,
-             *         type="string"
-             *     ),
-             *     @SWG\Response(
-             *         response=200,
-             *         description="Authentication succeeded",
-             *         ),
-             *     ),
-             * )
-             **/
-            $router->get(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleOauthLogin');
-            /**
-             * @SWG\Post(
-             *     path="/api/login/microsoft",
-             *     tags={"Authentication"},
-             *     summary="Get a JWT (JSON web token) by sending an Azure AD Oauth access_token",
-             *     @SWG\Parameter(
-             *         name="access_token",
-             *         in="formData",
-             *         description="Azure AD Oauth Access Token",
-             *         required=true,
-             *         type="string"
-             *     ),
-             *     @SWG\Response(
-             *         response=200,
-             *         description="Authentication succeeded",
-             *         ),
-             *     ),
-             * )
-             **/
-            $router->post(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleApiOauthLogin');
-        });
-        $this->app['router']->group(['middleware' => [ config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware') ] ], function($router){
-            $router->get(config('azure-oath.apiroutes.myinfo'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserInfo');
-            $router->get(config('azure-oath.apiroutes.myroles'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserRoles');
-            $router->get(config('azure-oath.apiroutes.myrolespermissions'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserRolesAbilities');
-        });
-        // This handles a situation where a route with the NAME of login does not exist, we define it to keep from breaking framework redirects hard coded
-        if (! \Route::has('login') ) {
-            $this->app['router']->get('login', 'Metrogistics\AzureSocialite\AuthController@loginOrRegister')->name('login');
-        }
-        if (! \Route::has('register') ) {
-            $this->app['router']->get('register', 'Metrogistics\AzureSocialite\AuthController@loginOrRegister')->name('register');
-        }
+        $this->loadRoutesFrom(__DIR__.'/../routes/api.microsoft.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/web.microsoft.php');
     }
 }
