@@ -41,6 +41,9 @@ php artisan migrate
 php artisan vendor:publish --provider="OwenIt\Auditing\AuditingServiceProvider"
 php artisan auditing:install
 php artisan migrate
+
+# L5-Swagger api documentation
+php artisan l5-swagger:generate
 ```
 
 Add the necessary env vars for Azure Active Directory OAUTH:

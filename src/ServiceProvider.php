@@ -25,22 +25,6 @@ class ServiceProvider extends BaseServiceProvider
         //     return new Authenticate();
         // });
 
-        /*
-        $userModelFile = app_path().'/User.php';
-        $userModelData = file_get_contents($userModelFile);
-        $userModelHash = md5($userModelData);
-        // ONLY REPLACE THE ORIGINAL DEFAULT User.php file, dont replace it multiple times!
-        if ($userModelHash == '15f19dad7b287f9204dbe2b34dd424d7') {
-            try {
-                \Log::debug('Detected default User.php model, replacing with enhanced model...');
-                copy(__DIR__.'/models/User.php', $userModelFile);
-                \Log::debug('Default User.php model replaced successfully');
-            } catch (\Throwable $e) {
-                \Log::debug('Detected default User.php model but replacement failed, '.$e->getMessage());
-            }
-        }
-        */
-
         // change the api auth guard to jwt rather than default of token
         config(['auth.guards.api.driver' => 'jwt']);
         //dd(config('auth.guards.api'));
@@ -62,6 +46,7 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/../publish/config/azure-oath.php' => config_path('azure-oath.php'),
             __DIR__.'/../publish/database/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
             __DIR__.'/../publish/app/User.php' => app_path().'/User.php',
+            __DIR__.'/../publish/routes/api.php' => base_path('routes').'/api.php',
         ]);
 
         $this->mergeConfigFrom(
