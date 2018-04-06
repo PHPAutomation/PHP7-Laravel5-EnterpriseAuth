@@ -35,6 +35,10 @@ class ApiAuthController extends AuthController
             }
         }
 
+        // Cache the users oauth accss token mapped to their user object for stuff and things
+        $key = '/oauth/tokens/'.$token;
+        \Cache::forever($key, $authUser);
+
         try {
             // verify the credentials and create a token for the user
             if (! $token = \JWTAuth::fromUser($authUser)) {
@@ -44,6 +48,7 @@ class ApiAuthController extends AuthController
             // something went wrong
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
+
         // if no errors are encountered we can return a JWT
         return response()->json(compact('token'));
     }
