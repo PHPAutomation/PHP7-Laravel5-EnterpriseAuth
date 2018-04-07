@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
  * )
  **/
 
-Route::middleware('api')->get('/api/hello', function (Request $request) {
+Route::middleware('api')->get('/hello', function (Request $request) {
     return 'hello world';
 });
 
