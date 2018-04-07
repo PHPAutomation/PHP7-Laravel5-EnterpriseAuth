@@ -27,30 +27,16 @@ class OauthTokenGuard implements Guard
         $this->provider = $provider;
         $this->user = NULL;
 
-        $oauthAccessToken = '';
-
-        // IF we get an explicit TOKEN=abc123 in the $request
-        if ($request->query('token')) {
-            $oauthAccessToken = $request->query('token');
-        } else {
-            echo 'Oauth access token NOT found in HTTP request query'.PHP_EOL;
-        }
-
-        // IF the request has an Authorization: Bearer abc123 header
-        $header = $request->headers->get('authorization');
-        $regex = '/bearer\s+(\S+)/i';
-        if ($header && preg_match($regex, $header, $matches) ) {
-            $oauthAccessToken = $matches[1];
-        } else {
-            echo 'Oauth access token NOT found in authorization header'.PHP_EOL;
-        }
+        // use the API auth controller helper functions to check the user creds
+        $apiAuthController = new ApiAuthController();
+        $oauthAccessToken = $apiAuthController->extractOauthAccessTokenFromRequest($request);
 
         // Check the cache to see if this is a previously authenticated oauth access token
         $key = '/oauth/tokens/'.$oauthAccessToken;
         if ($oauthAccessToken && \Cache::has($key)) {
             $this->user = \Cache::get($key);
         } else {
-            echo 'Oauth access token not found in cache with key '.$key.PHP_EOL;
+            $this->user = $apiAuthController->validateOauthCreateOrUpdateUserAndGroups($oauthAccessToken);
         }
     }
 

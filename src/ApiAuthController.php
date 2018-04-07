@@ -8,15 +8,34 @@ use Laravel\Socialite\Facades\Socialite;
 class ApiAuthController extends AuthController
 {
 
-    public function handleApiOauthLogin(\Illuminate\Http\Request $request)
+    public function extractOauthAccessTokenFromRequest(\Illuminate\Http\Request $request)
     {
-        $token = $request->input('access_token');
-        if (!$token) {
-            throw new \Exception('error: access_token is missing');
+        $oauthAccessToken = '';
+
+        // IF we get an explicit TOKEN=abc123 in the $request
+        if ($request->query('token')) {
+            $oauthAccessToken = $request->query('token');
         }
 
-        $user = $this->mapUserToObject($this->getUserByToken($token));
-        $user->groups = $this->groups($token);
+        // IF posted as access_token=abc123 in the $request
+        if ($request->input('access_token')) {
+            $oauthAccessToken = $request->input('access_token');
+        }
+
+        // IF the request has an Authorization: Bearer abc123 header
+        $header = $request->headers->get('authorization');
+        $regex = '/bearer\s+(\S+)/i';
+        if ($header && preg_match($regex, $header, $matches) ) {
+            $oauthAccessToken = $matches[1];
+        }
+
+        return $oauthAccessToken;
+    }
+
+    public function validateOauthCreateOrUpdateUserAndGroups($oauthAccessToken)
+    {
+        $user = $this->mapUserToObject($this->getUserByToken($oauthAccessToken));
+        $user->groups = $this->groups($oauthAccessToken);
         //dd($user);
 
         $authUser = $this->findOrCreateUser($user);
@@ -36,8 +55,23 @@ class ApiAuthController extends AuthController
         }
 
         // Cache the users oauth accss token mapped to their user object for stuff and things
-        $key = '/oauth/tokens/'.$token;
+        $key = '/oauth/tokens/'.$oauthAccessToken;
         \Cache::forever($key, $authUser);
+
+        return $authUser;
+    }
+
+    public function handleApiOauthLogin(\Illuminate\Http\Request $request)
+    {
+        $oauthAccessToken = $this->extractOauthAccessTokenFromRequest($request);
+
+        // If we cant find ANY token to use, abort.
+        if (!$oauthAccessToken) {
+            throw new \Exception('error: token/access_token/authorization bearer token is missing');
+        }
+
+        // Try to authenticate their token, update groups, cache results, etc.
+        $authUser = $this->validateOauthCreateOrUpdateUserAndGroups($oauthAccessToken);
 
         try {
             // verify the credentials and create a token for the user
@@ -102,6 +136,9 @@ class ApiAuthController extends AuthController
 
     protected function mapUserToObject(array $user)
     {
+        if (!$user['mail']) {
+            $user['mail'] = $user['userPrincipalName'];
+        }
         return (new \Laravel\Socialite\Two\User())->setRaw($user)->map([
             'id'                => $user['id'],
             'name'              => $user['displayName'],
