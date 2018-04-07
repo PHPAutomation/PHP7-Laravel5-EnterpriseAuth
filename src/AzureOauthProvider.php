@@ -94,6 +94,11 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 
     protected function mapUserToObject(array $user)
     {
+        //dd($user);
+        // WELL this is extremely stupid. if email address isnt set, use their UPN...
+        if (!$user['mail']) {
+            $user['mail'] = $user['userPrincipalName'];
+        }
         return (new User())->setRaw($user)->map([
             'id'                => $user['id'],
             'name'              => $user['displayName'],
