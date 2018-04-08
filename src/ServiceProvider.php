@@ -20,11 +20,6 @@ class ServiceProvider extends BaseServiceProvider
 
     public function boot()
     {
-        // Auth::extend('azure', function(){
-        //     dd('test');
-        //     return new Authenticate();
-        // });
-
         // change the api auth guard to jwt rather than default of token
         //config(['auth.guards.api.driver' => 'jwt']);
         //dd(config('auth.guards.api'));
@@ -68,5 +63,40 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->loadRoutesFrom(__DIR__.'/../routes/api.microsoft.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.microsoft.php');
+
+        // If the routes files for the swagger oauth config is NOT present, and we have all the right info, then generate it really quick
+        $swaggerAzureadFile = __DIR__.'/../routes/swagger.azuread.php';
+        if (!file_exists($swaggerAzureadFile) && env('AZURE_AD_CLIENT_ID') && env('AZURE_AD_OPENID_URL') ){
+            $openidConfig = $this->getOpenidConfiguration(env('AZURE_AD_OPENID_URL'));
+            $authorizationUrl = $openidConfig['authorization_endpoint'];
+            if (!$authorizationUrl) {
+                throw new \Exception('Error building swagger oauth config, azure ad openid url didnt give me an authorization url!');
+            }
+            $client_id = env('AZURE_AD_CLIENT_ID');
+            $contents = <<<EOF
+<?php
+/**
+ * @SWG\SecurityScheme(
+ *   securityDefinition="AzureAD",
+ *   type="oauth2",
+ *   authorizationUrl="$authorizationUrl?resource=https://graph.microsoft.com",
+ *   flow="implicit",
+ *   scopes={
+ *       "openid": "Use client_id: $client_id"
+ *   }
+ * )
+ **/
+EOF;
+            file_put_contents($swaggerAzureadFile, $contents);
+        }
+    }
+
+    public function getOpenidConfiguration($url)
+    {
+        $guzzle = new \GuzzleHttp\Client();
+
+        $response = $guzzle->get($url);
+
+        return json_decode($response->getBody(), true);
     }
 }

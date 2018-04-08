@@ -22,6 +22,16 @@ composer config prefer-stable true
 composer require metaclassing/php7-laravel5-enterpriseauth
 ```
 
+Add the necessary env vars for Azure Active Directory OAUTH:
+
+```
+AZURE_AD_OPENID_URL="https://login.windows.net/MyAwesomeAzureADTenant.onmicrosoft.com/.well-known/openid-configuration"
+AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
+AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
+AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
+^--- this one I will remove once I get the route named something sane.
+```
+
 Publish the config and override any defaults:
 
 ```
@@ -46,14 +56,6 @@ php artisan migrate
 php artisan l5-swagger:generate
 ```
 
-Add the necessary env vars for Azure Active Directory OAUTH:
-
-```
-AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
-AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
-AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
-^--- this one I will remove once I get the route named something sane.
-```
 ## Bouncer group-based authorization
 By default when a user authenticates their group information is populated into the bouncer roles list using group display name properties.
 Quick shortcuts to grant permissions to roles(groups) based on model type or instance
@@ -166,5 +168,9 @@ Manual setup instructions:
 4. The "Application ID" is what you will need for your `AZURE_AD_CLIENT_ID` env variable.
 5. Click into "Reply URLs". You will need to whitelist the redirection path for your app here. It will typically be `https://domain.com/login/microsoft/callback`. Click "Save"
 6. Select the permissions required for you app in the "Required permissions" tab.
+  1. requires read permissions for user info
+  2. add the graph API as a RESOURCE
+  3. requires read group permissions from the GRAPH API RESOURCE
+  4. click the GRANT button as a super duper global administrator
 8. In the "Keys" tab, enter a description (something like "App Secret"). Set Duration to "Never Expires". Click "Save". Copy the whole key. This will not show again. You will need this value for the `AZURE_AD_CLIENT_SECRET` env variable.
 over9000: there are some steps here missing to pre-authorize user access to the app and what permissions it has without prompting. It needs the ability to see all the users GROUP membership
