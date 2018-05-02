@@ -23,15 +23,12 @@ class WebAuthController extends AuthController
         // If we have user group information from this oauth attempt
         if(count($user->groups)) {
             // remove the users existing database roles before assigning new ones
-            $oldroles = $authUser->roles()->get();
-            foreach ($oldroles as $role) {
-                $authUser->retract($role);
-            }
+            \DB::table('assigned_roles')
+               ->where('entity_id', $authUser->id)
+               ->where('entity_type', get_class($authUser))
+               ->delete();
             // add the user to each group they are assigned
-            $newroles = $user->groups;
-            foreach ($newroles as $role) {
-                $authUser->assign($role);
-            }
+            $authUser->assign($user->groups);
         }
 
         auth()->login($authUser, true);

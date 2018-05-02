@@ -44,7 +44,7 @@ class OauthTokenGuard implements Guard
             try {
                 $this->user = $apiAuthController->certAuth();
             } catch (\Exception $e) {
-                echo 'cert auth error: '.$e->getMessage();
+                //echo 'cert auth error: '.$e->getMessage();
             }
         }
     }
