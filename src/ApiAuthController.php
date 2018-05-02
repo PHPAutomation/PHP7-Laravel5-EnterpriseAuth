@@ -7,7 +7,6 @@ use Laravel\Socialite\Facades\Socialite;
 
 class ApiAuthController extends AuthController
 {
-
     public function extractOauthAccessTokenFromRequest(\Illuminate\Http\Request $request)
     {
         $oauthAccessToken = '';
@@ -25,7 +24,7 @@ class ApiAuthController extends AuthController
         // IF the request has an Authorization: Bearer abc123 header
         $header = $request->headers->get('authorization');
         $regex = '/bearer\s+(\S+)/i';
-        if ($header && preg_match($regex, $header, $matches) ) {
+        if ($header && preg_match($regex, $header, $matches)) {
             $oauthAccessToken = $matches[1];
         }
 
@@ -41,7 +40,7 @@ class ApiAuthController extends AuthController
         $authUser = $this->findOrCreateUser($user);
 
         // If we have user group information from this oauth attempt
-        if(count($user->groups)) {
+        if (count($user->groups)) {
             // remove the users existing database roles before assigning new ones
             \DB::table('assigned_roles')
                ->where('entity_id', $authUser->id)
@@ -64,7 +63,7 @@ class ApiAuthController extends AuthController
         $oauthAccessToken = $this->extractOauthAccessTokenFromRequest($request);
 
         // If we cant find ANY token to use, abort.
-        if (!$oauthAccessToken) {
+        if (! $oauthAccessToken) {
             throw new \Exception('error: token/access_token/authorization bearer token is missing');
         }
 
@@ -112,6 +111,7 @@ class ApiAuthController extends AuthController
                 'Authorization' => 'Bearer '.$token,
             ],
         ]);
+
         return json_decode($response->getBody(), true);
     }
 
@@ -119,11 +119,11 @@ class ApiAuthController extends AuthController
     {
         $groups = [];
         try {
-        // try updating users bouncer permissions
+            // try updating users bouncer permissions
             $azureadgroups = $this->getUserGroupsByToken($token);
             // only proceed if we got a good response with group info
             if (isset($azureadgroups['value']) && count($azureadgroups['value'])) {
-                foreach($azureadgroups['value'] as $group) {
+                foreach ($azureadgroups['value'] as $group) {
                     $groups[] = $group['displayName'];
                 }
             }
@@ -134,14 +134,16 @@ class ApiAuthController extends AuthController
             // I have no idea what would cause other exceptions yet
             throw $e;
         }
+
         return $groups;
     }
 
     protected function mapUserToObject(array $user)
     {
-        if (!$user['mail']) {
+        if (! $user['mail']) {
             $user['mail'] = $user['userPrincipalName'];
         }
+
         return (new \Laravel\Socialite\Two\User())->setRaw($user)->map([
             'id'                => $user['id'],
             'name'              => $user['displayName'],
@@ -164,6 +166,7 @@ class ApiAuthController extends AuthController
     public function getAuthorizedUserInfo(\Illuminate\Http\Request $request)
     {
         $user = auth()->user();
+
         return response()->json($user);
     }
 
@@ -171,6 +174,7 @@ class ApiAuthController extends AuthController
     {
         $user = auth()->user();
         $roles = $user->roles()->get();
+
         return response()->json($roles);
     }
 
@@ -178,14 +182,14 @@ class ApiAuthController extends AuthController
     {
         $user = auth()->user();
         $roles = $user->roles()->get()->all();
-        foreach($roles as $key => $role) {
+        foreach ($roles as $key => $role) {
             $role->permissions = $role->abilities()->get()->all();
-            if(!count($role->permissions)) {
+            if (! count($role->permissions)) {
                 unset($roles[$key]);
             }
         }
         $roles = array_values($roles);
+
         return response()->json($roles);
     }
-
 }

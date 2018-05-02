@@ -32,7 +32,7 @@ class ServiceProvider extends BaseServiceProvider
 
         // Make sure that this vendor dir and the routes dir are in any scanned paths for swagger documentation
         $swaggerScanPaths = config('l5-swagger.paths.annotations');
-        if(! is_array($swaggerScanPaths)) {
+        if (! is_array($swaggerScanPaths)) {
             $swaggerScanPaths = [$swaggerScanPaths];
         }
         if (! in_array(base_path('routes'), $swaggerScanPaths)) {
@@ -44,17 +44,17 @@ class ServiceProvider extends BaseServiceProvider
         config(['l5-swagger.paths.annotations' => $swaggerScanPaths]);
 
         $this->publishes([
-            __DIR__.'/../publish/config/azure-oath.php' => config_path('azure-oath.php'),
+            __DIR__.'/../publish/config/azure-oath.php'                                                    => config_path('azure-oath.php'),
             __DIR__.'/../publish/database/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
-            __DIR__.'/../publish/app/User.php' => app_path().'/User.php',
-            __DIR__.'/../publish/routes/api.php' => base_path('routes').'/api.php',
+            __DIR__.'/../publish/app/User.php'                                                             => app_path().'/User.php',
+            __DIR__.'/../publish/routes/api.php'                                                           => base_path('routes').'/api.php',
         ]);
 
         $this->mergeConfigFrom(
             __DIR__.'/../publish/config/azure-oath.php', 'azure-oath'
         );
 
-        $this->app['Laravel\Socialite\Contracts\Factory']->extend('azure-oauth', function($app){
+        $this->app['Laravel\Socialite\Contracts\Factory']->extend('azure-oauth', function ($app) {
             return $app['Laravel\Socialite\Contracts\Factory']->buildProvider(
                 'Metrogistics\AzureSocialite\AzureOauthProvider',
                 config('azure-oath.credentials')
@@ -66,10 +66,10 @@ class ServiceProvider extends BaseServiceProvider
 
         // If the routes files for the swagger oauth config is NOT present, and we have all the right info, then generate it really quick
         $swaggerAzureadFile = __DIR__.'/../routes/swagger.azuread.php';
-        if (!file_exists($swaggerAzureadFile) && env('AZURE_AD_CLIENT_ID') && env('AZURE_AD_OPENID_URL') ){
+        if (! file_exists($swaggerAzureadFile) && env('AZURE_AD_CLIENT_ID') && env('AZURE_AD_OPENID_URL')) {
             $openidConfig = $this->getOpenidConfiguration(env('AZURE_AD_OPENID_URL'));
             $authorizationUrl = $openidConfig['authorization_endpoint'];
-            if (!$authorizationUrl) {
+            if (! $authorizationUrl) {
                 throw new \Exception('Error building swagger oauth config, azure ad openid url didnt give me an authorization url!');
             }
             $client_id = env('AZURE_AD_CLIENT_ID');

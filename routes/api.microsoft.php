@@ -1,7 +1,7 @@
 <?php
 
 // Unauthenticated API routes
-Route::middleware([config('azure-oath.apiroutes.middleware')])->group(function() {
+Route::middleware([config('azure-oath.apiroutes.middleware')])->group(function () {
 
     /**
      * @SWG\Get(
@@ -45,7 +45,7 @@ Route::middleware([config('azure-oath.apiroutes.middleware')])->group(function()
 });
 
 // Authenticated user information routes
-Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware')])->group(function() {
+Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware')])->group(function () {
 
     /**
      * @SWG\Get(
