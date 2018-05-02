@@ -7,7 +7,6 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-
     protected function findOrCreateUser($user)
     {
         $user_class = config('azure-oath.user_class');
@@ -22,14 +21,14 @@ class AuthController extends Controller
         return $UserFactory->convertAzureUser($user);
     }
 
-    public function loginOrRegister (\Illuminate\Http\Request $request)
+    public function loginOrRegister(\Illuminate\Http\Request $request)
     {
         return $request->expectsJson()
                ? response()->json(['message' => $exception->getMessage()], 401)
                : redirect()->guest(config('azure-oath.routes.login'));
     }
 
-    public function certAuth ()
+    public function certAuth()
     {
         // Make sure we got a client certificate from the web server
         if (! $_SERVER['SSL_CLIENT_CERT']) {
@@ -41,7 +40,7 @@ class AuthController extends Controller
         $asciicert = str_replace("\t", '', $_SERVER['SSL_CLIENT_CERT']);
         $cert = $x509->loadX509($asciicert);
         $names = $x509->getExtension('id-ce-subjectAltName');
-        if (!$names) {
+        if (! $names) {
             throw new \Exception('TLS client cert missing subject alternative names');
         }
         // Search subject alt names for user principal name
@@ -55,16 +54,15 @@ class AuthController extends Controller
                 }
             }
         }
-        if (!$upn) {
+        if (! $upn) {
             throw new \Exception('Could not find user principal name in TLS client cert');
         }
         $user_class = config('azure-oath.user_class');
         $user = $user_class::where('userPrincipalName', $upn)->first();
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('No user found with user principal name '.$upn);
         }
         //dd($user);
         return $user;
     }
-
 }

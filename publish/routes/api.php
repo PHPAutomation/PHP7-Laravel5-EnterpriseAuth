@@ -24,7 +24,6 @@ use Illuminate\Http\Request;
  *     @SWG\Response(response="200", description="Hello world example")
  * )
  **/
-
 Route::middleware('api')->get('/hello', function (Request $request) {
     return 'hello world';
 });

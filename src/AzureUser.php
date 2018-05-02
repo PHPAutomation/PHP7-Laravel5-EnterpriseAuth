@@ -46,13 +46,13 @@ class AzureUser
 
         $response = $guzzle->post('https://login.microsoftonline.com/common/oauth2/token', [
             'form_params' => [
-                'client_id' => config('azure-oath.credentials.client_id'),
-                'scope' => 'user.read',
+                'client_id'     => config('azure-oath.credentials.client_id'),
+                'scope'         => 'user.read',
                 'refresh_token' => $this->get()->refreshToken,
-                'redirect_uri' => config('azure-oath.credentials.redirect'),
-                'grant_type' => 'refresh_token',
-                'client_secret' => config('azure-oath.credentials.client_secret')
-            ]
+                'redirect_uri'  => config('azure-oath.credentials.redirect'),
+                'grant_type'    => 'refresh_token',
+                'client_secret' => config('azure-oath.credentials.client_secret'),
+            ],
         ]);
 
         $token_response = json_decode($response->getBody());
@@ -63,7 +63,7 @@ class AzureUser
         $this->user->expiresIn = $token_response->expires_in;
 
         session([
-            'azure_user' => $this->user
+            'azure_user' => $this->user,
         ]);
 
         return $this->get();

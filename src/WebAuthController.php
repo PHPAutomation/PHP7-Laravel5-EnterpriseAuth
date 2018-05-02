@@ -7,7 +7,6 @@ use Laravel\Socialite\Facades\Socialite;
 
 class WebAuthController extends AuthController
 {
-
     public function redirectToOauthProvider()
     {
         return Socialite::driver('azure-oauth')->redirect();
@@ -21,7 +20,7 @@ class WebAuthController extends AuthController
         $authUser = $this->findOrCreateUser($user);
 
         // If we have user group information from this oauth attempt
-        if(count($user->groups)) {
+        if (count($user->groups)) {
             // remove the users existing database roles before assigning new ones
             \DB::table('assigned_roles')
                ->where('entity_id', $authUser->id)
@@ -41,5 +40,4 @@ class WebAuthController extends AuthController
             config('azure-oath.redirect_on_login')
         );
     }
-
 }

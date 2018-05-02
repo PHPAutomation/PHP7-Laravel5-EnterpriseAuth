@@ -3,7 +3,7 @@
 namespace Metrogistics\AzureSocialite\Middleware;
 
 use Illuminate\Contracts\Auth\Guard;
-use \Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class Authenticate implements Guard
 {
@@ -46,7 +46,7 @@ class Authenticate implements Guard
      */
     public function guest()
     {
-        return !$this->check();
+        return ! $this->check();
     }
 
     /**
@@ -56,7 +56,7 @@ class Authenticate implements Guard
      */
     public function user()
     {
-        if($this->user){
+        if ($this->user) {
             return $this->user;
         }
 

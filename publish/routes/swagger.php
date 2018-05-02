@@ -17,8 +17,6 @@
      *     @SWG\Response(response="200", description="Hello world example")
      * )
      **/
-
     $api->any('/api/hello', function () {
         return 'hello world';
     });
-

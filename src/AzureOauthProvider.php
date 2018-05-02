@@ -27,7 +27,7 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
     {
         return array_merge(parent::getTokenFields($code), [
             'grant_type' => 'authorization_code',
-            'resource' => 'https://graph.microsoft.com',
+            'resource'   => 'https://graph.microsoft.com',
         ]);
     }
 
@@ -49,6 +49,7 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
                 'Authorization' => 'Bearer '.$token,
             ],
         ]);
+
         return json_decode($response->getBody(), true);
     }
 
@@ -56,11 +57,11 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
     {
         $groups = [];
         try {
-        // try updating users bouncer permissions
+            // try updating users bouncer permissions
             $azureadgroups = $this->getUserGroupsByToken($token);
             // only proceed if we got a good response with group info
             if (isset($azureadgroups['value']) && count($azureadgroups['value'])) {
-                foreach($azureadgroups['value'] as $group) {
+                foreach ($azureadgroups['value'] as $group) {
                     $groups[] = $group['displayName'];
                 }
             }
@@ -71,13 +72,14 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
             // I have no idea what would cause other exceptions yet
             throw $e;
         }
+
         return $groups;
     }
 
     public function user()
     {
         if ($this->hasInvalidState()) {
-            throw new InvalidStateException;
+            throw new InvalidStateException();
         }
 
         $response = $this->getAccessTokenResponse($this->getCode());
@@ -96,9 +98,10 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
     {
         //dd($user);
         // WELL this is extremely stupid. if email address isnt set, use their UPN...
-        if (!$user['mail']) {
+        if (! $user['mail']) {
             $user['mail'] = $user['userPrincipalName'];
         }
+
         return (new User())->setRaw($user)->map([
             'id'                => $user['id'],
             'name'              => $user['displayName'],
