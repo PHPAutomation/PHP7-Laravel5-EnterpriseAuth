@@ -7,7 +7,7 @@
         "laravel/socialite": ">3.0",
         "guzzlehttp/guzzle": "^6.3",
         "doctrine/dbal": "^2.5",
-        "tymon/jwt-auth": "dev-develop",
+        "tymon/jwt-auth": "^1.0.0-beta.3@dev",
         "silber/bouncer": "v1.0.0-rc.1",
         "owen-it/laravel-auditing": "^6.0",
         "DarkaOnLine/L5-Swagger": "^5.5",
