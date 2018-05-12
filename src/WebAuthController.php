@@ -40,10 +40,11 @@ class WebAuthController extends AuthController
         $destination = $request->session()
                                ->get('oauthIntendedUrl');
         // If there is no intended destination url, use the default
-        if(! $destination) {
+        if (! $destination) {
             $destination = config('azure-oath.redirect_on_login');
         }
         \Illuminate\Support\Facades\Log::info('AUTH success USER ID '.$authUser->id.' with redirect url '.$destination);
+
         return redirect($destination);
     }
 }

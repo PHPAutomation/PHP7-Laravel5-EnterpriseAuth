@@ -93,7 +93,7 @@ class OauthTokenGuard implements Guard
         public function getJsonParams()
         {
             $jsondata = $this->request->query('jsondata');
-    
+
             return (!empty($jsondata) ? json_decode($jsondata, TRUE) : NULL);
         }
     /**/
