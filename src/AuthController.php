@@ -33,6 +33,7 @@ class AuthController extends Controller
             $request->session()->put('oauthIntendedUrl', $lastPage);
             $response = redirect()->guest(config('azure-oath.routes.login'));
         }
+
         return $response;
     }
 
