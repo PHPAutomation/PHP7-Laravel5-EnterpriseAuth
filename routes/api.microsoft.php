@@ -1,49 +1,5 @@
 <?php
 
-// Unauthenticated API routes
-Route::middleware([config('azure-oath.apiroutes.middleware')])->group(function () {
-
-    /**
-     * @SWG\Get(
-     *     path="/api/login/microsoft",
-     *     tags={"Authentication"},
-     *     summary="Get a JWT (JSON web token) by sending an Azure AD Oauth access_token",
-     *     security={
-     *         {"AzureAD": {}},
-     *     },
-     *     @SWG\Response(
-     *         response=200,
-     *         description="Authentication succeeded",
-     *         ),
-     *     @SWG\Response(
-     *         response=401,
-     *         description="Authentication failed",
-     *         ),
-     * )
-     **/
-    Route::get(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleApiOauthLogin');
-
-    /**
-     * @SWG\Post(
-     *     path="/api/login/microsoft",
-     *     tags={"Authentication"},
-     *     summary="Get a JWT (JSON web token) by sending an Azure AD Oauth access_token",
-     *     security={
-     *         {"AzureAD": {}},
-     *     },
-     *     @SWG\Response(
-     *         response=200,
-     *         description="Authentication succeeded",
-     *         ),
-     *     @SWG\Response(
-     *         response=401,
-     *         description="Authentication failed",
-     *         ),
-     * )
-     **/
-    Route::post(config('azure-oath.apiroutes.login'), 'Metrogistics\AzureSocialite\ApiAuthController@handleApiOauthLogin');
-});
-
 // Authenticated user information routes
 Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware')])->group(function () {
 

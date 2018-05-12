@@ -37,11 +37,13 @@ class OauthTokenGuard implements Guard
         if ($oauthAccessToken && \Cache::has($key)) {
             $this->user = \Cache::get($key);
         } else {
+            // Check to see if they have newly authenticated with an oauth access token
             try {
                 $this->user = $apiAuthController->validateOauthCreateOrUpdateUserAndGroups($oauthAccessToken);
             } catch (\Exception $e) {
                 //echo 'token auth error: '.$e->getMessage();
             }
+            // Finally check to see if they are authenticated via certificate
             try {
                 $this->user = $apiAuthController->certAuth();
             } catch (\Exception $e) {

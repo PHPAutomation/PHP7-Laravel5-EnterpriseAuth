@@ -52,41 +52,10 @@ class ApiAuthController extends AuthController
 
         // Cache the users oauth accss token mapped to their user object for stuff and things
         $key = '/oauth/tokens/'.$oauthAccessToken;
-        //\Cache::forever($key, $authUser);
+        // TODO: Replace static value 1440 with actual life of the oauth access token we got
         \Cache::put($key, $authUser, 1440);
 
         return $authUser;
-    }
-
-    public function handleApiOauthLogin(\Illuminate\Http\Request $request)
-    {
-        $oauthAccessToken = $this->extractOauthAccessTokenFromRequest($request);
-
-        // If we cant find ANY token to use, abort.
-        if (! $oauthAccessToken) {
-            throw new \Exception('error: token/access_token/authorization bearer token is missing');
-        }
-
-        // Try to authenticate their token, update groups, cache results, etc.
-        $authUser = $this->validateOauthCreateOrUpdateUserAndGroups($oauthAccessToken);
-
-        try {
-            // verify the credentials and create a token for the user
-            if (! $token = \JWTAuth::fromUser($authUser)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
-            }
-        } catch (JWTException $e) {
-            // something went wrong
-            return response()->json(['error' => 'could_not_create_token'], 500);
-        }
-
-        // Cache the users oauth accss token mapped to their user object for stuff and things
-        $key = '/oauth/tokens/'.$token;
-        //\Cache::forever($key, $authUser);
-        \Cache::put($key, $authUser, 1440);
-
-        // if no errors are encountered we can return a JWT
-        return response()->json(compact('token'));
     }
 
     public function getUserByToken($token)

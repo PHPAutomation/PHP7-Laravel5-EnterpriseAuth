@@ -20,10 +20,6 @@ class ServiceProvider extends BaseServiceProvider
 
     public function boot()
     {
-        // change the api auth guard to jwt rather than default of token
-        //config(['auth.guards.api.driver' => 'jwt']);
-        //dd(config('auth.guards.api'));
-
         // Actually I have my own oauth token cache based authentication guard now lol
         config(['auth.guards.api.driver' => 'oauthtoken']);
         Auth::extend('oauthtoken', function ($app, $name, array $config) {
