@@ -12,7 +12,7 @@ class WebAuthController extends AuthController
         return Socialite::driver('azure-oauth')->redirect();
     }
 
-    public function handleOauthResponse()
+    public function handleOauthResponse(\Illuminate\Http\Request $request)
     {
         $user = Socialite::driver('azure-oauth')->user();
         //dd($user);
@@ -35,9 +35,11 @@ class WebAuthController extends AuthController
         // session([
         //     'azure_user' => $user
         // ]);
-
-        return redirect(
-            config('azure-oath.redirect_on_login')
+        $destination = $request->session()
+                               ->get('oauthIntendedUrl',
+                                     config('azure-oath.redirect_on_login')
         );
+        //\Illuminate\Support\Facades\Log::info('AUTH success with redirect url '.$destination);
+        return redirect($destination);
     }
 }

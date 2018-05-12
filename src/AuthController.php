@@ -23,9 +23,17 @@ class AuthController extends Controller
 
     public function loginOrRegister(\Illuminate\Http\Request $request)
     {
-        return $request->expectsJson()
-               ? response()->json(['message' => $exception->getMessage()], 401)
-               : redirect()->guest(config('azure-oath.routes.login'));
+        // This detects if we should hit the API auth handler or WEB auth handler
+        if ($request->expectsJson()) {
+            $response = response()->json(['message' => $exception->getMessage()], 401);
+        } else {
+            // This is what gets called after a user is redirected to /login by the framework
+            $lastPage = $request->session()->get('url.intended');
+            //\Illuminate\Support\Facades\Log::info('AUTH loginOrRegister with request url '.$lastPage);
+            $request->session()->put('oauthIntendedUrl', $lastPage);
+            $response = redirect()->guest(config('azure-oath.routes.login'));
+        }
+        return $response;
     }
 
     public function certAuth()
