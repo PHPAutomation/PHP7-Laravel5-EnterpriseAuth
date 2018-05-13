@@ -40,6 +40,7 @@ class AzureUser
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
+    /*
     public function refreshAccessToken()
     {
         $guzzle = new Client();
@@ -68,4 +69,5 @@ class AzureUser
 
         return $this->get();
     }
+    /**/
 }
