@@ -67,4 +67,22 @@ class AzureActiveDirectory
         $this->tokenEndpoint = $this->openIdConfig['token_endpoint'];
         $this->endSessionEndpoint = $this->openIdConfig['end_session_endpoint'];
     }
+
+    public function getApplicationAccessToken($clientId, $clientSecret)
+    {
+        $guzzle = new \GuzzleHttp\Client();
+        $url = $this->tokenEndpoint;
+        $parameters = [
+            'form_params' => [
+                'scope'         => 'https://graph.microsoft.com/.default',
+                'grant_type'    => 'client_credentials',
+                'client_id'     => $clientId,
+                'client_secret' => $clientSecret),
+            ],
+        ];
+        $response = $guzzle->post($url, $parameters);
+        $responseObject = json_decode($response->getBody());
+        return $responseObject->access_token;
+    }
+
 }
