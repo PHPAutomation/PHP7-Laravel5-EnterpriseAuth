@@ -30,6 +30,7 @@ class GraphAPI
         if (! $this->accessToken) {
             $this->authenticateAsApplication();
         }
+
         return $this->accessToken;
     }
 
@@ -50,11 +51,11 @@ class GraphAPI
         $url = $this->azureActiveDirectory->tokenEndpoint;
         $parameters = [
             'form_params' => [
-                'scope'        => $this->graphApiBaseUrl.'/.default',
-                'grant_type'   => 'client_credentials',
+                'scope'         => $this->graphApiBaseUrl.'/.default',
+                'grant_type'    => 'client_credentials',
                 'client_id'     => env('AZURE_AD_CLIENT_ID'),
                 'client_secret' => env('AZURE_AD_CLIENT_SECRET'),
-            ]
+            ],
         ];
         $response = $guzzle->post($url, $parameters);
         $responseObject = json_decode($response->getBody());
@@ -67,6 +68,7 @@ class GraphAPI
         $response = $guzzle->get($url, $this->getGuzzleClientParameters());
         $json = $response->getBody();
         $data = json_decode($json, true);
+
         return $data;
     }
 
@@ -76,45 +78,52 @@ class GraphAPI
         // Include version before any pieces of the url
         array_unshift($pieces, $this->graphApiVersion);
         // Build the url
-        foreach($pieces as $piece) {
+        foreach ($pieces as $piece) {
             $url .= '/'.$piece;
         }
+
         return $url;
     }
 
     public function getMe()
     {
         $pieces = ['me'];
+
         return $this->getUrl($this->buildUrl($pieces));
     }
 
     public function listUsers()
     {
         $pieces = ['users'];
+
         return $this->getUrl($this->buildUrl($pieces));
     }
 
     public function getUser($user)
     {
         $pieces = ['users', $user];
+
         return $this->getUrl($this->buildUrl($pieces));
     }
 
     public function getUserGroups($user)
     {
         $pieces = ['users', $user, 'memberOf'];
+
         return $this->getUrl($this->buildUrl($pieces));
     }
 
     public function listGroups()
     {
         $pieces = ['groups'];
+
         return $this->getUrl($this->buildUrl($pieces));
     }
 
     public function getGroup($group)
     {
         $pieces = ['groups', $group];
+
         return $this->getUrl($this->buildUrl($pieces));
     }
 
@@ -123,12 +132,13 @@ class GraphAPI
     {
         $parsed = [];
         if (isset($graphData[$key]) && is_array($graphData[$key])) {
-            foreach($graphData[$key] as $value) {
+            foreach ($graphData[$key] as $value) {
                 if (isset($value[$property]) && $value[$property]) {
                     $parsed[$value[$property]] = $value;
                 }
             }
         }
+
         return $parsed;
     }
 
@@ -137,5 +147,4 @@ class GraphAPI
     {
         return $this->parseGraphDataKeyByProperty($graphData, 'value', 'displayName');
     }
-
 }

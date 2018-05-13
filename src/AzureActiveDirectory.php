@@ -36,8 +36,8 @@ class AzureActiveDirectory
             // Make sure the tenant is formatted like xyzcorp.onmicrosoft.com
             $regex = '/\.onmicrosoft\.com/';
             if (! preg_match($regex, $tenantName, $hits)) {
-                 // Append the suffix if it is missing
-                 $tenantName .= '.onmicrosoft.com';
+                // Append the suffix if it is missing
+                $tenantName .= '.onmicrosoft.com';
             }
         }
         $this->tenantName = $tenantName;
@@ -45,10 +45,10 @@ class AzureActiveDirectory
 
     public function buildOpenIdConfigUrl()
     {
-        $this->openIdConfigUrl = $this->baseUrl . '/'
-                               . $this->tenantName . '/'
-                               . $this->version . '/'
-                               . $this->wellKnownOpenIdConfig;
+        $this->openIdConfigUrl = $this->baseUrl.'/'
+                               .$this->tenantName.'/'
+                               .$this->version.'/'
+                               .$this->wellKnownOpenIdConfig;
     }
 
     public function downloadOpenIdConfig()
@@ -67,5 +67,4 @@ class AzureActiveDirectory
         $this->tokenEndpoint = $this->openIdConfig['token_endpoint'];
         $this->endSessionEndpoint = $this->openIdConfig['end_session_endpoint'];
     }
-
 }
