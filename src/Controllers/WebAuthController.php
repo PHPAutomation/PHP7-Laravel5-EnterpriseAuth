@@ -10,21 +10,16 @@ class WebAuthController extends AuthController
     // Route to save unauthenticated users original page request and redirect to oauth provider redirect
     public function loginOrRegister(\Illuminate\Http\Request $request)
     {
-        // This detects if we should hit the API auth handler or WEB auth handler
-        if ($request->expectsJson()) {
-            $response = response()->json(['message' => $exception->getMessage()], 401);
-        } else {
-            // This is what gets called after a user is redirected to /login by the framework
-            $lastPage = $request->session()->get('url.intended');
-            \Illuminate\Support\Facades\Log::info('AUTH loginOrRegister with request url '.$lastPage);
-            // Make sure they are not going to end up in a redirect loop with the login route
-            if ($lastPage && $lastPage != route('login')) {
-                $request->session()->put('oauthIntendedUrl', $lastPage);
-            }
-            $response = redirect()->guest(config('enterpriseauth.routes.login'));
+        // This is what gets called after a user is redirected to /login by the framework
+        $lastPage = $request->session()->get('url.intended');
+        \Illuminate\Support\Facades\Log::info('AUTH loginOrRegister with request url '.$lastPage);
+
+        // Make sure they are not going to end up in a redirect loop with the login route
+        if ($lastPage && $lastPage != route('login')) {
+            $request->session()->put('oauthIntendedUrl', $lastPage);
         }
 
-        return $response;
+        return redirect()->guest(config('enterpriseauth.routes.login'));
     }
 
     // Route called to redirect unauthenticated users to oauth identity provider

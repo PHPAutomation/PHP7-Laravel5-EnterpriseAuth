@@ -103,7 +103,7 @@ class AuthController extends Controller
         $x509 = new \phpseclib\File\X509();
         // NGINX screws up the cert by putting a bunch of tab characters into it so we need to clean those out
         $asciicert = str_replace("\t", '', $_SERVER['SSL_CLIENT_CERT']);
-        $cert = $x509->loadX509($asciicert);
+        $x509->loadX509($asciicert);
         $names = $x509->getExtension('id-ce-subjectAltName');
         if (! $names) {
             throw new \Exception('TLS client cert missing subject alternative names');
