@@ -7,6 +7,43 @@ use Laravel\Socialite\Facades\Socialite;
 
 class ApiAuthController extends AuthController
 {
+    public function authenticateRequest(\Illuminate\Http\Request $request)
+    {
+        $accessToken = $this->extractOauthAccessTokenFromRequest($request);
+
+        // IF we got a token, prefer using that over cert auth
+        if ($accessToken) {
+            return $this->attemptTokenAuth($accessToken);
+        } else {
+            return $this->attemptCertAuth();
+        }
+    }
+
+    public function attemptTokenAuth($accessToken)
+    {
+        // Check the cache to see if this is a previously authenticated oauth access token
+        $key = '/oauth/tokens/'.$accessToken;
+        if ($accessToken && \Cache::has($key)) {
+            $user = \Cache::get($key);
+        // Check to see if they have newly authenticated with an oauth access token
+        } else {
+            try {
+                $this->user = $this->validateOauthCreateOrUpdateUserAndGroups($accessToken);
+            } catch (\Exception $e) {
+                //echo 'token auth error: '.$e->getMessage();
+            }
+        }
+    }
+
+    public function attemptCertAuth()
+    {
+        try {
+            return $apiAuthController->certAuth();
+        } catch (\Exception $e) {
+            //echo 'cert auth error: '.$e->getMessage();
+        }
+    }
+
     // Helper to find a token wherever it is hidden and attempt to auth it
     public function extractOauthAccessTokenFromRequest(\Illuminate\Http\Request $request)
     {

@@ -28,26 +28,7 @@ class OauthTokenGuard implements Guard
 
         // use the API auth controller helper functions to check the user creds
         $apiAuthController = new \Metaclassing\EnterpriseAuth\Controllers\ApiAuthController();
-        $oauthAccessToken = $apiAuthController->extractOauthAccessTokenFromRequest($request);
-
-        // Check the cache to see if this is a previously authenticated oauth access token
-        $key = '/oauth/tokens/'.$oauthAccessToken;
-        if ($oauthAccessToken && \Cache::has($key)) {
-            $this->user = \Cache::get($key);
-        } else {
-            // Check to see if they have newly authenticated with an oauth access token
-            try {
-                $this->user = $apiAuthController->validateOauthCreateOrUpdateUserAndGroups($oauthAccessToken);
-            } catch (\Exception $e) {
-                //echo 'token auth error: '.$e->getMessage();
-            }
-            // Finally check to see if they are authenticated via certificate
-            try {
-                $this->user = $apiAuthController->certAuth();
-            } catch (\Exception $e) {
-                //echo 'cert auth error: '.$e->getMessage();
-            }
-        }
+        $this->user = $apiAuthController->authenticateRequest($request);
     }
 
     /**
