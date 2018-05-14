@@ -24,7 +24,7 @@ class ServiceProvider extends BaseServiceProvider
         // Actually I have my own oauth token cache based authentication guard now lol
         config(['auth.guards.api.driver' => 'oauthtoken']);
         Auth::extend('oauthtoken', function ($app, $name, array $config) {
-            return new OauthTokenGuard(Auth::createUserProvider($config['provider']), $app->make('request'));
+            return new \Metaclassing\EnterpriseAuth\Middleware\OauthTokenGuard(Auth::createUserProvider($config['provider']), $app->make('request'));
         });
 
         // Make sure that this vendor dir and the routes dir are in any scanned paths for swagger documentation

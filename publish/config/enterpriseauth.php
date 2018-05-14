@@ -49,8 +49,8 @@ return [
     // Do not include the id field above.
     // AzureUserField => LaravelUserField
     'user_map' => [
-        'name'              => 'name',
-        'email'             => 'email',
+        'displayName'       => 'name',
+        'mail'              => 'email',
         'userPrincipalName' => 'userPrincipalName',
     ],
 ];

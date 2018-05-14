@@ -28,7 +28,7 @@ class OauthTokenGuard implements Guard
         $this->user = null;
 
         // use the API auth controller helper functions to check the user creds
-        $apiAuthController = new ApiAuthController();
+        $apiAuthController = new \Metaclassing\EnterpriseAuth\Controllers\ApiAuthController();
         $oauthAccessToken = $apiAuthController->extractOauthAccessTokenFromRequest($request);
 
         // Check the cache to see if this is a previously authenticated oauth access token

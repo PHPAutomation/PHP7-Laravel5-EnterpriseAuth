@@ -52,12 +52,6 @@ class AuthController extends Controller
             $userData['mail'] = $userData['userPrincipalName'];
         }
 
-        // Make sure we have email set for laravel \App\User
-        $userData['email'] = $userData['mail'];
-
-        // Password should be blank as a mater of principal
-        $userData['password'] = '';
-
         return $userData;
     }
 
@@ -71,9 +65,29 @@ class AuthController extends Controller
         // If we dont have an existing user
         if (! $user) {
             // Go create a new one with this data
-            $UserFactory = new UserFactory();
-            $user = $UserFactory->convertAzureUser($userData);
+            $user = $this->createUserFromAzureData($userData);
         }
+
+        return $user;
+    }
+
+    // This takes the azure userdata and makes a new user out of it
+    public function createUserFromAzureData($userData)
+    {
+        // Config options for user type/id/field map
+        $userType = config('enterpriseauth.user_class');
+        $userFieldMap = config('enterpriseauth.user_map');
+        $idField = config('enterpriseauth.user_id_field');
+
+        // Should build new \App\User
+        $user = new $userType();
+        $user->$idField = $userData['id'];
+        // Go through any other fields the config wants us to map
+        foreach ($userFieldMap as $azureField => $userField) {
+            $user->$userField = $userData[$azureField];
+        }
+        // Save our newly minted user
+        $user->save();
 
         return $user;
     }
