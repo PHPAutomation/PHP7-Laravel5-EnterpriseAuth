@@ -1,7 +1,7 @@
 <?php
 
 // Authenticated user information routes
-Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath.apiroutes.authmiddleware')])->group(function () {
+Route::middleware([config('enterpriseauth.apiroutes.middleware'), config('enterpriseauth.apiroutes.authmiddleware')])->group(function () {
 
     /**
      * @SWG\Get(
@@ -21,7 +21,7 @@ Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath
      *         ),
      * )
      **/
-    Route::get(config('azure-oath.apiroutes.myinfo'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserInfo');
+    Route::get(config('enterpriseauth.apiroutes.myinfo'), 'Metaclassing\EnterpriseAuth\Controllers\ApiAuthController@getAuthorizedUserInfo');
 
     /**
      * @SWG\Get(
@@ -41,7 +41,7 @@ Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath
      *         ),
      * )
      **/
-    Route::get(config('azure-oath.apiroutes.myroles'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserRoles');
+    Route::get(config('enterpriseauth.apiroutes.myroles'), 'Metaclassing\EnterpriseAuth\Controllers\ApiAuthController@getAuthorizedUserRoles');
 
     /**
      * @SWG\Get(
@@ -61,5 +61,5 @@ Route::middleware([config('azure-oath.apiroutes.middleware'), config('azure-oath
      *         ),
      * )
      **/
-    Route::get(config('azure-oath.apiroutes.myrolespermissions'), 'Metrogistics\AzureSocialite\ApiAuthController@getAuthorizedUserRolesAbilities');
+    Route::get(config('enterpriseauth.apiroutes.myrolespermissions'), 'Metaclassing\EnterpriseAuth\Controllers\ApiAuthController@getAuthorizedUserRolesAbilities');
 });

@@ -1,4 +1,4 @@
-# Laravel Socialite Azure Active Directory Plugin
+# php7-laravel5-enterpriseauth Laravel Azure Active Directory Plugin
 
 ## PRE INSTALLATION
 
@@ -29,19 +29,19 @@ AZURE_AD_TENANT="MyAwesomeAzureADTenant"
 AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
 AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
 AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
-^--- this one I will remove once I get the route named something sane.
+# ^--- this one I will try to remove once I get the route named something sane.
 ```
 
 Publish the config and override any defaults:
 
 ```
-# Metrogistics AzureSocialite lib - currently base of this fork
-php artisan vendor:publish --provider="Metrogistics\AzureSocialite\ServiceProvider" --force
+# Metaclassing\EnterpriseAuth is this library
+php artisan vendor:publish --provider="Metaclassing\EnterpriseAuth\ServiceProvider" --force
 php artisan migrate
 
 # JWT Authentication lib - currently running dev branch for 5.5 support
-php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
-php artisan jwt:secret
+#php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+#php artisan jwt:secret
 
 # Bouncer Authorization lib
 php artisan vendor:publish --tag="bouncer.migrations"
@@ -144,15 +144,13 @@ After login, you can access the basic Laravel authenticate user as normal:
 auth()->user();
 ```
 
-If you need to set additional user fields when the user model is created at login, you may provide a callback via the `UserFactory::userCallback()` method. A good place to do so would be in your AppServiceProvider's `boot` method:
+## Azure AD Application Registration
+1. Goto https://apps.dev.microsoft.com and create a new app.
+2. I am trying to work out the best enterprise app vs hybrid app, stay tuned for more.
+3. Profit.
 
-```
-\Metrogistics\AzureSocialite\UserFactory::userCallback(function($new_user){
-	$new_user->api_token = str_random(60);
-});
-```
 
-## Azure AD Setup
+## OLD Azure AD Setup instructions (may be wrong)
 
 TL;DR - Have somebody execute the runbook in azure that creates a new aad app with unlimited key timeout and access to view user groups.
 

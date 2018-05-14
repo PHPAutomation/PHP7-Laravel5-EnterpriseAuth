@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistics\AzureSocialite;
+namespace Metaclassing\EnterpriseAuth\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;

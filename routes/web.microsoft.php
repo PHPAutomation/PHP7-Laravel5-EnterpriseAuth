@@ -1,14 +1,14 @@
 <?php
 
-Route::middleware([config('azure-oath.routes.middleware')])->group(function () {
-    Route::get(config('azure-oath.routes.login'), 'Metrogistics\AzureSocialite\WebAuthController@redirectToOauthProvider');
-    Route::get(config('azure-oath.routes.callback'), 'Metrogistics\AzureSocialite\WebAuthController@handleOauthResponse');
+Route::middleware([config('enterpriseauth.routes.middleware')])->group(function () {
+    Route::get(config('enterpriseauth.routes.login'), 'Metaclassing\EnterpriseAuth\Controllers\WebAuthController@redirectToOauthProvider');
+    Route::get(config('enterpriseauth.routes.callback'), 'Metaclassing\EnterpriseAuth\Controllers\WebAuthController@handleOauthResponse');
 
     // This handles a situation where a route with the NAME of login does not exist, we define it to keep from breaking framework redirects hard coded
     if (! \Route::has('login')) {
-        Route::get('login', 'Metrogistics\AzureSocialite\WebAuthController@loginOrRegister')->name('login');
+        Route::get('login', 'Metaclassing\EnterpriseAuth\Controllers\WebAuthController@loginOrRegister')->name('login');
     }
     if (! \Route::has('register')) {
-        Route::get('register', 'Metrogistics\AzureSocialite\WebAuthController@loginOrRegister')->name('register');
+        Route::get('register', 'Metaclassing\EnterpriseAuth\Controllers\WebAuthController@loginOrRegister')->name('register');
     }
 });

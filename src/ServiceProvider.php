@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistics\AzureSocialite;
+namespace Metaclassing\EnterpriseAuth;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
@@ -42,7 +42,7 @@ class ServiceProvider extends BaseServiceProvider
 
         // Make sure the publish command picks up our config, migration, user model, and dummy API route files
         $this->publishes([
-            __DIR__.'/../publish/config/azure-oath.php'                                                    => config_path('azure-oath.php'),
+            __DIR__.'/../publish/config/enterpriseauth.php'                                                => config_path('enterpriseauth.php'),
             __DIR__.'/../publish/database/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
             __DIR__.'/../publish/app/User.php'                                                             => app_path().'/User.php',
             __DIR__.'/../publish/routes/api.php'                                                           => base_path('routes').'/api.php',
@@ -50,7 +50,7 @@ class ServiceProvider extends BaseServiceProvider
 
         // Merge configs with the default configs
         $this->mergeConfigFrom(
-            __DIR__.'/../publish/config/azure-oath.php', 'azure-oath'
+            __DIR__.'/../publish/config/enterpriseauth.php', 'enterpriseauth'
         );
 
         // Load our HTTP routes for API and WEB authentication

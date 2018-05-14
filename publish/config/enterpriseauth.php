@@ -25,6 +25,7 @@ return [
         'myroles'            => 'api/me/roles',
         'myrolespermissions' => 'api/me/roles/permissions',
     ],
+    // TODO: go around rewriting crap to use these
     'credentials' => [
         'client_id'     => env('AZURE_AD_CLIENT_ID', ''),
         'client_secret' => env('AZURE_AD_CLIENT_SECRET', ''),
@@ -51,6 +52,5 @@ return [
         'name'              => 'name',
         'email'             => 'email',
         'userPrincipalName' => 'userPrincipalName',
-        'name'              => 'name',
     ],
 ];

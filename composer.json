@@ -8,7 +8,6 @@
         "microsoft/microsoft-graph": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "doctrine/dbal": "^2.5",
-        "tymon/jwt-auth": "^1.0.0-beta.3@dev",
         "silber/bouncer": "v1.0.0-rc.1",
         "owen-it/laravel-auditing": "^6.0",
         "DarkaOnLine/L5-Swagger": "^5.5",
@@ -18,25 +17,18 @@
         {
             "name": "metaclassing",
             "email": "metaclassing@secureobscure.com"
-        },
-        {
-            "name": "Patrick Stephan",
-            "email": "patrick.stephan@metrogistics.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Metrogistics\\AzureSocialite\\": "src/"
+            "Metaclassing\\EnterpriseAuth\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Metrogistics\\AzureSocialite\\ServiceProvider"
-            ],
-            "aliases": {
-                "AzureUser": "Metrogistics\\AzureSocialite\\AzureUserFacade"
-            }
+                "Metaclassing\\EnterpriseAuth\\ServiceProvider"
+            ]
         }
     }
 }

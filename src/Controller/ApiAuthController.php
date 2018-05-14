@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistics\AzureSocialite;
+namespace Metaclassing\EnterpriseAuth\Controller;
 
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;

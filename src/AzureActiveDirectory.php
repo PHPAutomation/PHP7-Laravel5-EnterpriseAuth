@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistics\AzureSocialite;
+namespace Metaclassing\EnterpriseAuth;
 
 class AzureActiveDirectory
 {

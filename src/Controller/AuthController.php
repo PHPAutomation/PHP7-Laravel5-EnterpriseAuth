@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistics\AzureSocialite;
+namespace Metaclassing\EnterpriseAuth\Controller;
 
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
@@ -11,7 +11,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->azureActiveDirectory = new AzureActiveDirectory(ENV('AZURE_AD_TENANT'));
+        $this->azureActiveDirectory = new \Metaclassing\EnterpriseAuth\AzureActiveDirectory(ENV('AZURE_AD_TENANT'));
     }
 
     // This is called after a web auth gets an access token, or api auth sends an access token
@@ -64,8 +64,8 @@ class AuthController extends Controller
     protected function findOrCreateUser($userData)
     {
         // Configurable \App\User type and ID field name
-        $userType = config('azure-oath.user_class');
-        $userIdField = config('azure-oath.user_id_field');
+        $userType = config('enterpriseauth.user_class');
+        $userIdField = config('enterpriseauth.user_id_field');
         // Try to find an existing user
         $user = $userType::where($userIdField, $userData['id'])->first();
         // If we dont have an existing user
@@ -107,7 +107,7 @@ class AuthController extends Controller
         if (! $upn) {
             throw new \Exception('Could not find user principal name in TLS client cert');
         }
-        $user_class = config('azure-oath.user_class');
+        $user_class = config('enterpriseauth.user_class');
         $user = $user_class::where('userPrincipalName', $upn)->first();
         if (! $user) {
             throw new \Exception('No user found with user principal name '.$upn);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Metrogistics\AzureSocialite;
+namespace Metaclassing\EnterpriseAuth\Controller;
 
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;
@@ -21,7 +21,7 @@ class WebAuthController extends AuthController
             if ($lastPage && $lastPage != route('login')) {
                 $request->session()->put('oauthIntendedUrl', $lastPage);
             }
-            $response = redirect()->guest(config('azure-oath.routes.login'));
+            $response = redirect()->guest(config('enterpriseauth.routes.login'));
         }
 
         return $response;
@@ -73,7 +73,7 @@ class WebAuthController extends AuthController
                                ->get('oauthIntendedUrl');
         // If there is no intended destination url, use the default
         if (! $destination) {
-            $destination = config('azure-oath.redirect_on_login');
+            $destination = config('enterpriseauth.redirect_on_login');
         }
         \Illuminate\Support\Facades\Log::info('AUTH success USER ID '.$user->id.' with redirect url '.$destination);
 

@@ -60,8 +60,8 @@ class Authenticate implements Guard
             return $this->user;
         }
 
-        $user_class = config('azure-oath.user_class');
-        $field_name = config('azure-oath.user_id_field');
+        $user_class = config('enterpriseauth.user_class');
+        $field_name = config('enterpriseauth.user_id_field');
         $azure_user = app('azure-user')->get();
 
         $this->user = $user_class::where($field_name, $azure_user->id)->first();
