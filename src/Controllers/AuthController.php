@@ -1,6 +1,6 @@
 <?php
 
-namespace Metaclassing\EnterpriseAuth\Controller;
+namespace Metaclassing\EnterpriseAuth\Controllers;
 
 use Illuminate\Routing\Controller;
 use Laravel\Socialite\Facades\Socialite;

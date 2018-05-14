@@ -15,13 +15,6 @@ chown -R www-data .
 
 ## Installation
 
-This is a dev package, your minimum stability must support this:
-```
-composer config minimum-stability dev
-composer config prefer-stable true
-composer require metaclassing/php7-laravel5-enterpriseauth
-```
-
 Add the necessary env vars for Azure Active Directory OAUTH:
 
 ```
@@ -30,6 +23,13 @@ AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
 AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
 AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
 # ^--- this one I will try to remove once I get the route named something sane.
+```
+
+This is a dev package, your minimum stability must support this:
+```
+composer config minimum-stability dev
+composer config prefer-stable true
+composer require metaclassing/php7-laravel5-enterpriseauth
 ```
 
 Publish the config and override any defaults:
@@ -55,6 +55,13 @@ php artisan migrate
 # L5-Swagger api documentation
 php artisan l5-swagger:generate
 ```
+
+Double check your permissions are golden!
+
+```
+chown -R www-data .
+```
+
 
 ## Bouncer group-based authorization
 By default when a user authenticates their group information is populated into the bouncer roles list using group display name properties.
