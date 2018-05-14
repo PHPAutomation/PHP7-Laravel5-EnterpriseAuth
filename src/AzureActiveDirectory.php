@@ -46,18 +46,18 @@ class AzureActiveDirectory
     public function buildOpenIdConfigUrl()
     {
         $this->openIdConfigUrl = $this->baseUrl.'/'
-                               . $this->tenantName.'/'
-                               . $this->version.'/'
-                               . $this->wellKnownOpenIdConfig;
+                               .$this->tenantName.'/'
+                               .$this->version.'/'
+                               .$this->wellKnownOpenIdConfig;
     }
 
     public function buildAdminConsentUrl($clientId, $redirectUri)
     {
         $url = $this->baseUrl.'/'
-             . $this->tenantName.'/'
-             . 'adminconsent'
-             . '?client_id='.$clientId
-             . '&redirect_uri='.$redirectUri;
+             .$this->tenantName.'/'
+             .'adminconsent'
+             .'?client_id='.$clientId
+             .'&redirect_uri='.$redirectUri;
 
         return $url;
     }
