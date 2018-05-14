@@ -39,8 +39,8 @@ class WebAuthController extends AuthController
     public function buildAuthUrl()
     {
         $url = $this->azureActiveDirectory->authorizationEndpoint
-             . '?'
-             . $this->buildAuthUrlQueryString();
+             .'?'
+             .$this->buildAuthUrlQueryString();
 
         return $url;
     }
@@ -87,7 +87,7 @@ class WebAuthController extends AuthController
         $url = $this->azureActiveDirectory->tokenEndpoint;
         $parameters = [
             'headers' => [
-                'Accept' => 'application/json'
+                'Accept' => 'application/json',
             ],
             'form_params' => [
                 'code'          => $code,
@@ -96,11 +96,12 @@ class WebAuthController extends AuthController
                 'client_secret' => env('AZURE_AD_CLIENT_SECRET'),
                 'redirect_uri'  => ENV('AZURE_AD_CALLBACK_URL'),
                 'grant_type'    => 'authorization_code',
-             ]
+             ],
         ];
         $response = $guzzle->post($url, $parameters);
         $responseObject = json_decode($response->getBody());
         $accessToken = $responseObject->access_token;
+
         return $accessToken;
     }
 }

@@ -15,7 +15,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         // Make sure nobody is including or running this thing without all the required env settings
         $requiredVariables = ['AZURE_AD_CLIENT_ID', 'AZURE_AD_CLIENT_SECRET', 'AZURE_AD_TENANT', 'AZURE_AD_CALLBACK_URL'];
-        foreach($requiredVariables as $env) {
+        foreach ($requiredVariables as $env) {
             if (! env($env)) {
                 throw new \Exception('enterpriseauth setup error: missing mandatory .env value for '.$env);
             }
@@ -87,5 +87,4 @@ EOF;
             file_put_contents($swaggerAzureadFile, $contents);
         }
     }
-
 }

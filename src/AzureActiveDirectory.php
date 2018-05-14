@@ -97,7 +97,7 @@ class AzureActiveDirectory
         ];
         $response = $guzzle->post($url, $parameters);
         $responseObject = json_decode($response->getBody());
+
         return $responseObject->access_token;
     }
-
 }

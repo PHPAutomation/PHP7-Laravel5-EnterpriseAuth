@@ -38,7 +38,7 @@ class AuthController extends Controller
     {
         $graph = new \Microsoft\Graph\Graph();
         $graph->setAccessToken($accessToken);
-        $user = $graph->createRequest("GET", "/me")
+        $user = $graph->createRequest('GET', '/me')
                       ->setReturnType(\Microsoft\Graph\Model\User::class)
                       ->execute();
 
@@ -48,7 +48,7 @@ class AuthController extends Controller
     public function scrubMicrosoftGraphUserData($userData)
     {
         // Fix any stupid crap with missing or null fields
-        if (! isset($userData['mail']) || !$userData['mail']) {
+        if (! isset($userData['mail']) || ! $userData['mail']) {
             $userData['mail'] = $userData['userPrincipalName'];
         }
 
@@ -123,7 +123,7 @@ class AuthController extends Controller
 
         // Process group data into a list of displayNames we use as roles
         $groups = [];
-        foreach($groupData as $info) {
+        foreach ($groupData as $info) {
             $groups[] = $info['displayName'];
         }
 
@@ -160,5 +160,4 @@ class AuthController extends Controller
 
         return $groupData;
     }
-
 }
