@@ -4,7 +4,6 @@ namespace Metaclassing\EnterpriseAuth\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
-use phpDocumentor\Reflection\Types\Array_;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 
