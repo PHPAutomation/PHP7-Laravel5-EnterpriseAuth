@@ -61,6 +61,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         // Now I have a machine gun. ho ho ho!
         \Illuminate\Support\Facades\Auth::extend('oauthtoken', function ($app, $name, array $config) {
             $userProvider = \Illuminate\Support\Facades\Auth::createUserProvider($config['provider']);
+
             return new \Metaclassing\EnterpriseAuth\Middleware\OauthTokenGuard($userProvider, $app->make('request'));
         });
     }
