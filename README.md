@@ -1,4 +1,7 @@
-# php7-laravel5-enterpriseauth Laravel Azure Active Directory Plugin
+# PHP7-Laravel5-EnterpriseAuth for Azure Active Directory
+[![Build Status](https://scrutinizer-ci.com/g/metaclassing/PHP7-Laravel5-EnterpriseAuth/badges/build.png?b=master)](https://scrutinizer-ci.com/g/metaclassing/PHP7-Laravel5-EnterpriseAuth/build-status/master)
+[![Style-CI](https://styleci.io/repos/122122106/shield?branch=master)](https://styleci.io/repos/122122106)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/metaclassing/PHP7-Laravel5-EnterpriseAuth/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/metaclassing/PHP7-Laravel5-EnterpriseAuth/?branch=master)
 
 ## PRE INSTALLATION
 
