@@ -10,9 +10,15 @@ return [
         // There should be no reason to override this.
         'login' => 'login/microsoft',
 
+        // clear users session and redirect to oauth idp session-end url
+        'logout' => 'logout/microsoft',
+
         // The app route that SSO will redirect to.
         // There should be no reason to override this.
         'callback' => 'login/microsoft/callback',
+
+        // redirects an aad admin user to their consent url for app permissions
+        'adminconsent' => 'login/microsoft/adminconsent',
     ],
     // And now for something completely different
     'apiroutes' => [

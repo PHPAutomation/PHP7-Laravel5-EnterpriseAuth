@@ -22,6 +22,29 @@ class WebAuthController extends AuthController
         return redirect()->guest(config('enterpriseauth.routes.login'));
     }
 
+    // Route to clear the session and redirect to oauth signout handler
+    public function logout(\Illuminate\Http\Request $request)
+    {
+        auth()->logout();
+        return redirect(config('enterpriseauth.routes.logout'));
+    }
+
+    // Route to redirect to oauth idp end-session endpoint
+    public function logoutFromOauthProvider(\Illuminate\Http\Request $request)
+    {
+        $endSessionEndpoint = $this->azureActiveDirectory->endSessionEndpoint;
+        return redirect($endSessionEndpoint);
+    }
+
+    // Route called to redirect administrative users to provide consent to access aad
+    public function redirectToOauthAdminConsent(\Illuminate\Http\Request $request)
+    {
+        $url = $this->azureActiveDirectory->buildAdminConsentUrl(config('enterpriseauth.credentials.client_id'),
+                                                                 config('enterpriseauth.credentials.callback_url'));
+        //return new \Illuminate\Http\RedirectResponse($url);
+        return redirect($url);
+    }
+
     // Route called to redirect unauthenticated users to oauth identity provider
     public function redirectToOauthProvider(\Illuminate\Http\Request $request)
     {
@@ -55,6 +78,18 @@ class WebAuthController extends AuthController
 
     // Route to handle response back from our oauth provider
     public function handleOauthResponse(\Illuminate\Http\Request $request)
+    {
+        // Handle user authentication responses
+        if ($request->input('code')) {
+            return $this->handleOauthLoginResponse($request);
+        }
+        if ($request->input('admin_consent')) {
+            return 'Thank you';
+        }
+        throw new \Exception('Unhandled oauth response');
+    }
+
+    public function handleOauthLoginResponse(\Illuminate\Http\Request $request)
     {
         // Turn coke into pepsi
         $accessToken = $this->getAccessTokenFromCode($request->input('code'));

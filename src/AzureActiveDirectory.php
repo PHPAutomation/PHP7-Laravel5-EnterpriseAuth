@@ -46,9 +46,20 @@ class AzureActiveDirectory
     public function buildOpenIdConfigUrl()
     {
         $this->openIdConfigUrl = $this->baseUrl.'/'
-                               .$this->tenantName.'/'
-                               .$this->version.'/'
-                               .$this->wellKnownOpenIdConfig;
+                               . $this->tenantName.'/'
+                               . $this->version.'/'
+                               . $this->wellKnownOpenIdConfig;
+    }
+
+    public function buildAdminConsentUrl($clientId, $redirectUri)
+    {
+        $url = $this->baseUrl.'/'
+             . $this->tenantName.'/'
+             . 'adminconsent'
+             . '?client_id='.$clientId
+             . '&redirect_uri='.$redirectUri;
+
+        return $url;
     }
 
     public function downloadOpenIdConfig()
@@ -83,13 +94,14 @@ class AzureActiveDirectory
         }
     }
 
-    public function getApplicationAccessToken($clientId, $clientSecret)
+    public function getApplicationAccessToken($clientId, $clientSecret, $scopes = ['https://graph.microsoft.com/.default'])
     {
+        $scope = implode(' ', $scopes);
         $guzzle = new \GuzzleHttp\Client();
         $url = $this->tokenEndpoint;
         $parameters = [
             'form_params' => [
-                'scope'         => 'https://graph.microsoft.com/.default',
+                'scope'         => $scope,
                 'grant_type'    => 'client_credentials',
                 'client_id'     => $clientId,
                 'client_secret' => $clientSecret,
