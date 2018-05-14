@@ -122,7 +122,6 @@ class OauthTokenGuard implements Guard
      * Set the current user.
      *
      * @param  array $user User info
-     * @return void
      */
     public function setUser(Authenticatable $user)
     {
