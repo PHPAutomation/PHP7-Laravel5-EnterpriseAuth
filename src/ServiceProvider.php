@@ -3,23 +3,24 @@
 namespace Metrogistics\AzureSocialite;
 
 use Illuminate\Support\Facades\Auth;
-use SocialiteProviders\Manager\SocialiteWasCalled;
-use Metrogistics\AzureSocialite\Middleware\Authenticate;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 class ServiceProvider extends BaseServiceProvider
 {
     public function register()
     {
-        // $this->app->bind('azure-user', function(){
-        //     return new AzureUser(
-        //         session('azure_user')
-        //     );
-        // });
     }
 
     public function boot()
     {
+        // Make sure nobody is including or running this thing without all the required env settings
+        $requiredVariables = ['AZURE_AD_CLIENT_ID', 'AZURE_AD_CLIENT_SECRET', 'AZURE_AD_TENANT', 'AZURE_AD_CALLBACK_URL'];
+        foreach($requiredVariables as $env) {
+            if (! env($env)) {
+                throw new \Exception('enterpriseauth setup error: missing mandatory .env value for '.$env);
+            }
+        }
+
         // Actually I have my own oauth token cache based authentication guard now lol
         config(['auth.guards.api.driver' => 'oauthtoken']);
         Auth::extend('oauthtoken', function ($app, $name, array $config) {
@@ -39,6 +40,7 @@ class ServiceProvider extends BaseServiceProvider
         }
         config(['l5-swagger.paths.annotations' => $swaggerScanPaths]);
 
+        // Make sure the publish command picks up our config, migration, user model, and dummy API route files
         $this->publishes([
             __DIR__.'/../publish/config/azure-oath.php'                                                    => config_path('azure-oath.php'),
             __DIR__.'/../publish/database/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
@@ -46,28 +48,27 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/../publish/routes/api.php'                                                           => base_path('routes').'/api.php',
         ]);
 
+        // Merge configs with the default configs
         $this->mergeConfigFrom(
             __DIR__.'/../publish/config/azure-oath.php', 'azure-oath'
         );
 
-        $this->app['Laravel\Socialite\Contracts\Factory']->extend('azure-oauth', function ($app) {
-            return $app['Laravel\Socialite\Contracts\Factory']->buildProvider(
-                'Metrogistics\AzureSocialite\AzureOauthProvider',
-                config('azure-oath.credentials')
-            );
-        });
-
+        // Load our HTTP routes for API and WEB authentication
         $this->loadRoutesFrom(__DIR__.'/../routes/api.microsoft.php');
         $this->loadRoutesFrom(__DIR__.'/../routes/web.microsoft.php');
 
+        // Trigger generating our swagger oauth security settings based on application env file contents
+        $this->generateSwaggerOauthSecurityScheme();
+    }
+
+    protected function generateSwaggerOauthSecurityScheme()
+    {
         // If the routes files for the swagger oauth config is NOT present, and we have all the right info, then generate it really quick
         $swaggerAzureadFile = __DIR__.'/../routes/swagger.azuread.php';
-        if (! file_exists($swaggerAzureadFile) && env('AZURE_AD_CLIENT_ID') && env('AZURE_AD_OPENID_URL')) {
-            $openidConfig = $this->getOpenidConfiguration(env('AZURE_AD_OPENID_URL'));
-            $authorizationUrl = $openidConfig['authorization_endpoint'];
-            if (! $authorizationUrl) {
-                throw new \Exception('Error building swagger oauth config, azure ad openid url didnt give me an authorization url!');
-            }
+        if (! file_exists($swaggerAzureadFile)) {
+            $aad = new AzureActiveDirectory(env('AZURE_AD_TENANT'));
+            //$authorizationUrl = $aad->authorizationEndpoint . '?resource=https://graph.microsoft.com';
+            $authorizationUrl = $aad->authorizationEndpoint;
             $client_id = env('AZURE_AD_CLIENT_ID');
             $contents = <<<EOF
 <?php
@@ -75,10 +76,10 @@ class ServiceProvider extends BaseServiceProvider
  * @SWG\SecurityScheme(
  *   securityDefinition="AzureAD",
  *   type="oauth2",
- *   authorizationUrl="$authorizationUrl?resource=https://graph.microsoft.com",
+ *   authorizationUrl="$authorizationUrl",
  *   flow="implicit",
  *   scopes={
- *       "openid": "Use client_id: $client_id"
+ *       "https://graph.microsoft.com/.default": "Use client_id: $client_id"
  *   }
  * )
  **/
@@ -87,12 +88,4 @@ EOF;
         }
     }
 
-    public function getOpenidConfiguration($url)
-    {
-        $guzzle = new \GuzzleHttp\Client();
-
-        $response = $guzzle->get($url);
-
-        return json_decode($response->getBody(), true);
-    }
 }

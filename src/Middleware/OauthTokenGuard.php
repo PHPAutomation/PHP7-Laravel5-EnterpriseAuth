@@ -2,7 +2,6 @@
 
 namespace Metrogistics\AzureSocialite;
 
-use GuzzleHttp\json_decode;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use phpDocumentor\Reflection\Types\Array_;

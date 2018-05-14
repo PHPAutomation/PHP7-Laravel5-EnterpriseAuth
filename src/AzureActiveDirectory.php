@@ -62,10 +62,25 @@ class AzureActiveDirectory
 
     public function parseOpenIdConfig()
     {
-        $this->downloadOpenIdConfig();
+        $this->checkCachedOpenIdConfig();
         $this->authorizationEndpoint = $this->openIdConfig['authorization_endpoint'];
         $this->tokenEndpoint = $this->openIdConfig['token_endpoint'];
         $this->endSessionEndpoint = $this->openIdConfig['end_session_endpoint'];
+    }
+
+    public function checkCachedOpenIdConfig()
+    {
+        // See if we already have this tenants aad config cached
+        $key = '/azureactivedirectory/'.$this->tenantName.'/config';
+        if (\Cache::has($key)) {
+            // Use the cached version if available
+            $this->openIdConfig = \Cache::get($key);
+        } else {
+            // Download it if we dont have it
+            $this->downloadOpenIdConfig();
+            // Keep it around for 60 minutes
+            \Cache::put($key, $this->openIdConfig, 60);
+        }
     }
 
     public function getApplicationAccessToken($clientId, $clientSecret)
@@ -77,7 +92,7 @@ class AzureActiveDirectory
                 'scope'         => 'https://graph.microsoft.com/.default',
                 'grant_type'    => 'client_credentials',
                 'client_id'     => $clientId,
-                'client_secret' => $clientSecret),
+                'client_secret' => $clientSecret,
             ],
         ];
         $response = $guzzle->post($url, $parameters);

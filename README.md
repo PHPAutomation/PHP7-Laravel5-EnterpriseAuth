@@ -25,7 +25,7 @@ composer require metaclassing/php7-laravel5-enterpriseauth
 Add the necessary env vars for Azure Active Directory OAUTH:
 
 ```
-AZURE_AD_OPENID_URL="https://login.windows.net/MyAwesomeAzureADTenant.onmicrosoft.com/.well-known/openid-configuration"
+AZURE_AD_TENANT="MyAwesomeAzureADTenant"
 AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
 AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
 AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
