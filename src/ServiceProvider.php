@@ -14,9 +14,11 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         // Make sure nobody is including or running this thing without all the required env settings
-        foreach (config('enterpriseauth.credentials') as $config => $env) {
-            if (! config('enterpriseauth.credentials.'.$config)) {
-                throw new \Exception('enterpriseauth setup error: missing mandatory config value for enterpriseauth.credentials.'.$config.' check your .env file!');
+        if (config('enterpriseauth')) {
+            foreach (config('enterpriseauth.credentials') as $config => $env) {
+                if (! config('enterpriseauth.credentials.'.$config)) {
+                    throw new \Exception('enterpriseauth setup error: missing mandatory config value for enterpriseauth.credentials.'.$config.' check your .env file!');
+                }
             }
         }
 
