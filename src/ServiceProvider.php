@@ -14,10 +14,9 @@ class ServiceProvider extends BaseServiceProvider
     public function boot()
     {
         // Make sure nobody is including or running this thing without all the required env settings
-        $requiredVariables = ['AZURE_AD_CLIENT_ID', 'AZURE_AD_CLIENT_SECRET', 'AZURE_AD_TENANT', 'AZURE_AD_CALLBACK_URL'];
-        foreach ($requiredVariables as $env) {
-            if (! env($env)) {
-                throw new \Exception('enterpriseauth setup error: missing mandatory .env value for '.$env);
+        foreach (config('enterpriseauth.credentials') as $config => $env) {
+            if (! config('enterpriseauth.credentials.'.$config)) {
+                throw new \Exception('enterpriseauth setup error: missing mandatory config value for enterpriseauth.credentials.'.$config.' check your .env file!');
             }
         }
 
@@ -66,10 +65,10 @@ class ServiceProvider extends BaseServiceProvider
         // If the routes files for the swagger oauth config is NOT present, and we have all the right info, then generate it really quick
         $swaggerAzureadFile = __DIR__.'/../routes/swagger.azuread.php';
         if (! file_exists($swaggerAzureadFile)) {
-            $aad = new AzureActiveDirectory(env('AZURE_AD_TENANT'));
+            $aad = new AzureActiveDirectory(config('enterpriseauth.credentials.tenant'));
             //$authorizationUrl = $aad->authorizationEndpoint . '?resource=https://graph.microsoft.com';
             $authorizationUrl = $aad->authorizationEndpoint;
-            $client_id = env('AZURE_AD_CLIENT_ID');
+            $client_id = config('enterpriseauth.credentials.client_id');
             $contents = <<<EOF
 <?php
 /**

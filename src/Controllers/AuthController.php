@@ -11,7 +11,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->azureActiveDirectory = new \Metaclassing\EnterpriseAuth\AzureActiveDirectory(ENV('AZURE_AD_TENANT'));
+        $tenant = config('enterpriseauth.credentials.tenant');
+        $this->azureActiveDirectory = new \Metaclassing\EnterpriseAuth\AzureActiveDirectory($tenant);
     }
 
     // This is called after a web auth gets an access token, or api auth sends an access token
@@ -156,7 +157,7 @@ class AuthController extends Controller
     public function getMicrosoftGraphGroupMembership($user)
     {
         // Get an access token for our application (not the users token)
-        $accessToken = $this->azureActiveDirectory->getApplicationAccessToken(ENV('AZURE_AD_CLIENT_ID'), ENV('AZURE_AD_CLIENT_SECRET'));
+        $accessToken = $this->azureActiveDirectory->getApplicationAccessToken(config('enterpriseauth.credentials.client_id'), config('enterpriseauth.credentials.client_secret'));
 
         // Use the app access token to get a given users group membership
         $graph = new \Microsoft\Graph\Graph();

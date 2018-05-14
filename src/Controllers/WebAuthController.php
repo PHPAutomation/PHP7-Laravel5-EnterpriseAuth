@@ -49,8 +49,8 @@ class WebAuthController extends AuthController
     public function buildAuthUrlQueryString()
     {
         $fields = [
-            'client_id'     => ENV('AZURE_AD_CLIENT_ID'),
-            'redirect_uri'  => ENV('AZURE_AD_CALLBACK_URL'),
+            'client_id'     => config('enterpriseauth.credentials.client_id'),
+            'redirect_uri'  => config('enterpriseauth.credentials.callback_url'),
             'scope'         => 'https://graph.microsoft.com/.default',
             'response_type' => 'code',
         ];
@@ -92,9 +92,9 @@ class WebAuthController extends AuthController
             'form_params' => [
                 'code'          => $code,
                 'scope'         => 'https://graph.microsoft.com/.default',
-                'client_id'     => env('AZURE_AD_CLIENT_ID'),
-                'client_secret' => env('AZURE_AD_CLIENT_SECRET'),
-                'redirect_uri'  => ENV('AZURE_AD_CALLBACK_URL'),
+                'client_id'     => config('enterpriseauth.credentials.client_id'),
+                'client_secret' => config('enterpriseauth.credentials.client_secret'),
+                'redirect_uri'  => config('enterpriseauth.credentials.callback_url'),
                 'grant_type'    => 'authorization_code',
              ],
         ];

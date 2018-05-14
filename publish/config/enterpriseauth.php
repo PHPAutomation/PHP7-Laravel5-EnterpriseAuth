@@ -27,9 +27,10 @@ return [
     ],
     // TODO: go around rewriting crap to use these
     'credentials' => [
-        'client_id'     => env('AZURE_AD_CLIENT_ID', ''),
-        'client_secret' => env('AZURE_AD_CLIENT_SECRET', ''),
-        'redirect'      => env('AZURE_AD_CALLBACK_URL', '/login/microsoft/callback'),
+        'tenant'        => env('AZURE_AD_TENANT'),
+        'client_id'     => env('AZURE_AD_CLIENT_ID'),
+        'client_secret' => env('AZURE_AD_CLIENT_SECRET'),
+        'callback_url'  => env('AZURE_AD_CALLBACK_URL'),
     ],
 
     // The route to redirect the user to upon login.
