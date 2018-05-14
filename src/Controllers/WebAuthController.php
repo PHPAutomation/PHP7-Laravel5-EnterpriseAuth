@@ -26,6 +26,7 @@ class WebAuthController extends AuthController
     public function logout(\Illuminate\Http\Request $request)
     {
         auth()->logout();
+
         return redirect(config('enterpriseauth.routes.logout'));
     }
 
@@ -33,6 +34,7 @@ class WebAuthController extends AuthController
     public function logoutFromOauthProvider(\Illuminate\Http\Request $request)
     {
         $endSessionEndpoint = $this->azureActiveDirectory->endSessionEndpoint;
+
         return redirect($endSessionEndpoint);
     }
 
