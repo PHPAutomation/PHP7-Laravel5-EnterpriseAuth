@@ -28,11 +28,12 @@ class ApiAuthController extends AuthController
         // Check to see if they have newly authenticated with an oauth access token
         } else {
             try {
-                $this->user = $this->validateOauthCreateOrUpdateUserAndGroups($accessToken);
+                $user = $this->validateOauthCreateOrUpdateUserAndGroups($accessToken);
             } catch (\Exception $e) {
                 //echo 'token auth error: '.$e->getMessage();
             }
         }
+        return $user;
     }
 
     public function attemptCertAuth()
