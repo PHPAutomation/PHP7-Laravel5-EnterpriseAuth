@@ -23,6 +23,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->publishes([
             __DIR__.'/../publish/config/enterpriseauth.php'                                                => config_path('enterpriseauth.php'),
             __DIR__.'/../publish/database/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php' => $this->app->databasePath().'/migrations/2018_02_19_152839_alter_users_table_for_azure_ad.php',
+            __DIR__.'/../publish/database/migrations/2018_05_15_152839_create_azure_apps_table.php'        => $this->app->databasePath().'/migrations/2018_05_15_152839_create_azure_apps_table.php',
             __DIR__.'/../publish/app/User.php'                                                             => app_path().'/User.php',
             __DIR__.'/../publish/routes/api.php'                                                           => base_path('routes').'/api.php',
         ]);
