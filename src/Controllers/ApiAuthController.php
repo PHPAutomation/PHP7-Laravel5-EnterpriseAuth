@@ -33,6 +33,7 @@ class ApiAuthController extends AuthController
                 //echo 'token auth error: '.$e->getMessage();
             }
         }
+
         return $user;
     }
 
