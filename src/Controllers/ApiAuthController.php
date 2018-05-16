@@ -81,7 +81,7 @@ class ApiAuthController extends AuthController
         $type = 'unknown';
 
         // If the token payload contains name or preferred_username then its a user
-        if (isset($token['payload']['name']) && isset($token['payload']['preferred_username'])) {
+        if (isset($token['payload']['name']) && isset($token['payload']['upn'])) {
             $type = 'user';
         // ELSE If the token uses OUR app id as the AUDience then its an app... probablly...
         } elseif (isset($token['payload']['aud']) && $token['payload']['aud'] == config('enterpriseauth.credentials.client_id')) {

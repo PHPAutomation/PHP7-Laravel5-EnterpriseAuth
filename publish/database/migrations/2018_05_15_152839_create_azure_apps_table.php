@@ -14,12 +14,10 @@ class CreateAzureAppsTable extends Migration
     public function up()
     {
         Schema::create('azure_apps', function (Blueprint $table) {
-            // Auto increment for unique id
-            $table->increments('id');
+            // The app id aaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
+            $table->string('id', 36);
             // Some human readable name
             $table->string('name');
-            // The app id aaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
-            $table->string('app_id', 36);
             // lets give it timestamps for fun
             $table->timestamps();
         });
