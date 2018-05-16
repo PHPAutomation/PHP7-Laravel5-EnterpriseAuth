@@ -22,6 +22,11 @@ class OauthTokenGuard implements Guard
      */
     public function __construct(UserProvider $provider, Request $request)
     {
+        \App::singleton(
+            \Illuminate\Contracts\Debug\ExceptionHandler::class,
+            \Metaclassing\EnterpriseAuth\Exceptions\Handler::class
+        );
+
         $this->request = $request;
         $this->provider = $provider;
         $this->user = null;
