@@ -148,7 +148,7 @@ class ApiAuthController extends AuthController
     public function attemptCertAuth()
     {
         try {
-            return $apiAuthController->certAuth();
+            return $this->certAuth();
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::info('api auth cert exception: '.$e->getMessage());
         }
