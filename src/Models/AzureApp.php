@@ -14,6 +14,6 @@ class AzureApp extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'app_id',
+        'id', 'name',
     ];
 }

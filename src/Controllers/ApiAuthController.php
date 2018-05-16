@@ -97,13 +97,13 @@ class ApiAuthController extends AuthController
         // Perform the validation and get the payload
         $appData = $this->validateRSAToken($accessToken);
         // Upsert the Azure App object
-        $app_id = $appData->azp;
-        $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::where('app_id', $app_id)->first();
+        $appId = $appData->azp;
+        $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::where('id', $appId)->first();
         // If we dont have an existing app go create one
         if (! $app) {
             $azureApp = [
-                'name'   => $app_id,
-                'app_id' => $app_id,
+                'id'   => $appId,
+                'name' => $appId,
             ];
             $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::create($azureApp);
         }
