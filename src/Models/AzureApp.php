@@ -1,10 +1,10 @@
 <?php
 
-namespace \Metaclassing\EnterpriseAuth\Models;
+namespace Metaclassing\EnterpriseAuth\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class AzureApplication extends Authenticatable
+class AzureApp extends Authenticatable
 {
     use \Silber\Bouncer\Database\HasRolesAndAbilities;
 

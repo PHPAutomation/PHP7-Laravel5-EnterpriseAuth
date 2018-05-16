@@ -71,9 +71,24 @@ class AzureActiveDirectory
         $this->openIdConfig = json_decode($json, true);
     }
 
+    public function downloadSigningKeys()
+    {
+        $this->signingKeys = [];
+        $guzzle = new \GuzzleHttp\Client();
+        $response = $guzzle->get($this->openIdConfig['jwks_uri']);
+        $json = $response->getBody();
+        $keyData = json_decode($json, true);
+        $keyRing = $keyData['keys'];
+        // Loop through the keys and build us an index by kid
+        foreach($keyRing as $key) {
+            $this->signingKeys[$key['kid']] = $key;
+        }
+    }
+
     public function parseOpenIdConfig()
     {
         $this->checkCachedOpenIdConfig();
+        $this->checkCachedSigningKeys();
         $this->authorizationEndpoint = $this->openIdConfig['authorization_endpoint'];
         $this->tokenEndpoint = $this->openIdConfig['token_endpoint'];
         $this->endSessionEndpoint = $this->openIdConfig['end_session_endpoint'];
@@ -91,6 +106,21 @@ class AzureActiveDirectory
             $this->downloadOpenIdConfig();
             // Keep it around for 60 minutes
             \Cache::put($key, $this->openIdConfig, 60);
+        }
+    }
+
+    public function checkCachedSigningKeys()
+    {
+        // See if we already have this tenants aad config cached
+        $key = '/azureactivedirectory/'.$this->tenantName.'/keys';
+        if (\Cache::has($key)) {
+            // Use the cached version if available
+            $this->signingKeys = \Cache::get($key);
+        } else {
+            // Download it if we dont have it
+            $this->downloadSigningKeys();
+            // Keep it around for 60 minutes
+            \Cache::put($key, $this->signingKeys, 60);
         }
     }
 
