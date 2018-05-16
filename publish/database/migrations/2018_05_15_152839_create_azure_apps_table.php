@@ -20,6 +20,8 @@ class CreateAzureAppsTable extends Migration
             $table->string('name');
             // The app id aaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
             $table->string('app_id', 36);
+            // lets give it timestamps for fun
+            $table->timestamps();
         });
     }
 
