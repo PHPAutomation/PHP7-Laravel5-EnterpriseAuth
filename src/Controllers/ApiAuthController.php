@@ -68,6 +68,7 @@ class ApiAuthController extends AuthController
             'payload'   => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($bodyb64), true),
             'signature' => $cryptob64,
             ];
+
         return $token;
     }
 
@@ -81,7 +82,7 @@ class ApiAuthController extends AuthController
         if (isset($token['payload']['name']) && isset($token['payload']['preferred_username'])) {
             $type = 'user';
         // ELSE If the token uses OUR app id as the AUDience then its an app... probablly...
-        } else if (isset($token['payload']['aud']) && $token['payload']['aud'] == config('enterpriseauth.credentials.client_id')) {
+        } elseif (isset($token['payload']['aud']) && $token['payload']['aud'] == config('enterpriseauth.credentials.client_id')) {
             $type = 'app';
         }
 
@@ -99,7 +100,7 @@ class ApiAuthController extends AuthController
         // If we dont have an existing app go create one
         if (! $app) {
             $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::create();
-            $app->name   = $app_id;
+            $app->name = $app_id;
             $app->app_id = $app_id;
             $app->save();
         }
@@ -133,10 +134,10 @@ class ApiAuthController extends AuthController
         }
         // Get the X509 certificate for the selected key id
         $certificate = '-----BEGIN CERTIFICATE-----'.PHP_EOL
-                     . $x5c . PHP_EOL
-                     . '-----END CERTIFICATE-----';
+                     .$x5c.PHP_EOL
+                     .'-----END CERTIFICATE-----';
         // Perform the verification and get the verified payload results
-        $payload = \Firebase\JWT\JWT::decode($accessToken, $certificate, array('RS256'));
+        $payload = \Firebase\JWT\JWT::decode($accessToken, $certificate, ['RS256']);
 
         return $payload;
     }

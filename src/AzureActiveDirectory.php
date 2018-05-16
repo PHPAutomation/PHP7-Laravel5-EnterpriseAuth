@@ -80,7 +80,7 @@ class AzureActiveDirectory
         $keyData = json_decode($json, true);
         $keyRing = $keyData['keys'];
         // Loop through the keys and build us an index by kid
-        foreach($keyRing as $key) {
+        foreach ($keyRing as $key) {
             $this->signingKeys[$key['kid']] = $key;
         }
     }
