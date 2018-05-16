@@ -8,6 +8,9 @@ class AzureApp extends Authenticatable
 {
     use \Silber\Bouncer\Database\HasRolesAndAbilities;
 
+    protected $casts = ['id' => 'string'];
+    public $incrementing = false;
+
     /**
      * The attributes that are mass assignable.
      *
