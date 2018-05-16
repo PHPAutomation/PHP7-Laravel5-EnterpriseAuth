@@ -22,6 +22,8 @@ class AzureActiveDirectory
     public $tokenEndpoint = '';
     // AAD logout endpoint
     public $endSessionEndpoint = '';
+    // Array of RSA token signing keys indexed by KeyID
+    public $signingKeys = [];
 
     public function __construct($tenantName = 'common')
     {
