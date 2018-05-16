@@ -49,16 +49,16 @@ class ApiAuthController extends AuthController
         // handle different types of tokens
         switch ($type) {
             case 'app':
-                $auth = $this->validateOauthCreateOrUpdateAzureApp($accessToken);
+                $user = $this->validateOauthCreateOrUpdateAzureApp($accessToken);
                 break;
             case 'user':
-                $auth = $this->validateOauthCreateOrUpdateUserAndGroups($accessToken);
+                $user = $this->validateOauthCreateOrUpdateUserAndGroups($accessToken);
                 break;
             default:
                 throw new \Exception('Could not identify type of access token: '.json_encode($token));
         }
 
-        return $auth;
+        return $user;
     }
 
     // Try to unpack a jwt and get us the 3 chunks as assoc arrays so we can perform token identification
@@ -96,19 +96,23 @@ class ApiAuthController extends AuthController
     {
         // Perform the validation and get the payload
         $appData = $this->validateRSAToken($accessToken);
-        // Upsert the Azure App object
-        $appId = $appData->azp;
-        $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::where('id', $appId)->first();
-        // If we dont have an existing app go create one
-        if (! $app) {
-            $azureApp = [
-                'id'   => $appId,
-                'name' => $appId,
+        // Find or create for azure app user object
+        $userData = [
+                'id'                => $appData->azp,
+                'displayName'       => $appData->azp,
+                'mail'              => $appData->azp,
+                'userPrincipalName' => $appData->azp,
             ];
-            $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::create($azureApp);
-        }
 
-        return $app;
+        // This is a laravel \App\User
+        $user = $this->findOrCreateUser($userData);
+
+        // Cache the users oauth accss token mapped to their user object for stuff and things
+        $key = '/oauth/tokens/'.$accessToken;
+        // TODO: Replace static value 1440 with actual life of the oauth access token we got
+        \Cache::put($key, $user, 1440);
+
+        return $user;
     }
 
     // this checks the app token, validates it, returns decoded signed data
