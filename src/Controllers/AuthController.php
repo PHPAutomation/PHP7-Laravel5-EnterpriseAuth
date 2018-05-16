@@ -95,6 +95,24 @@ class AuthController extends Controller
 
     public function certAuth()
     {
+        // get the cert from the webserver and load it into an x509 phpseclib object
+        $cert = $this->loadClientCertFromWebserver();
+         // extract the UPN from the client cert
+        $upn = $this->getUserPrincipalNameFromClientCert($cert);
+        // get the user if it exists
+        $user_class = config('enterpriseauth.user_class');
+
+        // TODO: rewrite this so that if the user doesnt exist we create them and get their groups from AAD
+        $user = $user_class::where('userPrincipalName', $upn)->first();
+        if (! $user) {
+            throw new \Exception('No user found with user principal name '.$upn);
+        }
+
+        return $user;
+    }
+
+    public function loadClientCertFromWebserver()
+    {
         // Make sure we got a client certificate from the web server
         if (! $_SERVER['SSL_CLIENT_CERT']) {
             throw new \Exception('TLS client certificate missing');
@@ -104,6 +122,11 @@ class AuthController extends Controller
         // NGINX screws up the cert by putting a bunch of tab characters into it so we need to clean those out
         $asciicert = str_replace("\t", '', $_SERVER['SSL_CLIENT_CERT']);
         $x509->loadX509($asciicert);
+        return $x509;
+    }
+
+    public function getUserPrincipalNameFromClientCert($x509)
+    {
         $names = $x509->getExtension('id-ce-subjectAltName');
         if (! $names) {
             throw new \Exception('TLS client cert missing subject alternative names');
@@ -122,13 +145,7 @@ class AuthController extends Controller
         if (! $upn) {
             throw new \Exception('Could not find user principal name in TLS client cert');
         }
-        $user_class = config('enterpriseauth.user_class');
-        $user = $user_class::where('userPrincipalName', $upn)->first();
-        if (! $user) {
-            throw new \Exception('No user found with user principal name '.$upn);
-        }
-        //dd($user);
-        return $user;
+        return $upn;
     }
 
     public function updateGroups($user)
