@@ -21,6 +21,8 @@ class ApiAuthController extends AuthController
 
     public function attemptTokenAuth($accessToken)
     {
+        $user = NULL;
+
         // Check the cache to see if this is a previously authenticated oauth access token
         $key = '/oauth/tokens/'.$accessToken;
         if ($accessToken && \Cache::has($key)) {
@@ -99,10 +101,11 @@ class ApiAuthController extends AuthController
         $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::where('app_id', $app_id)->first();
         // If we dont have an existing app go create one
         if (! $app) {
-            $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::create();
-            $app->name = $app_id;
-            $app->app_id = $app_id;
-            $app->save();
+            $azureApp = [
+                'name' => $app_id,
+                'app_id' => $app_id,
+            ];
+            $app = \Metaclassing\EnterpriseAuth\Models\AzureApp::create($azureApp);
         }
 
         return $app;
