@@ -97,7 +97,7 @@ class AuthController extends Controller
     {
         // get the cert from the webserver and load it into an x509 phpseclib object
         $cert = $this->loadClientCertFromWebserver();
-         // extract the UPN from the client cert
+        // extract the UPN from the client cert
         $upn = $this->getUserPrincipalNameFromClientCert($cert);
         // get the user if it exists
         $user_class = config('enterpriseauth.user_class');
@@ -122,6 +122,7 @@ class AuthController extends Controller
         // NGINX screws up the cert by putting a bunch of tab characters into it so we need to clean those out
         $asciicert = str_replace("\t", '', $_SERVER['SSL_CLIENT_CERT']);
         $x509->loadX509($asciicert);
+
         return $x509;
     }
 
@@ -145,6 +146,7 @@ class AuthController extends Controller
         if (! $upn) {
             throw new \Exception('Could not find user principal name in TLS client cert');
         }
+
         return $upn;
     }
 
