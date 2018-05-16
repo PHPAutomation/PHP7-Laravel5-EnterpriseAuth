@@ -85,7 +85,7 @@ class OauthTokenGuard implements Guard
     public function id()
     {
         if ($user = $this->user()) {
-            return $this->user()->getAuthIdentifier();
+            return $user->getAuthIdentifier();
         }
     }
 
@@ -107,7 +107,5 @@ class OauthTokenGuard implements Guard
     public function setUser(Authenticatable $user)
     {
         $this->user = $user;
-
-        return $this;
     }
 }
