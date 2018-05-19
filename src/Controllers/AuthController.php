@@ -50,6 +50,7 @@ class AuthController extends Controller
     {
         // Fix any stupid crap with missing or null fields
         if (! isset($userData['mail']) || ! $userData['mail']) {
+            \Illuminate\Support\Facades\Log::debug('graph api did not contain mail field, using userPrincipalName instead '.json_encode($userData));
             $userData['mail'] = $userData['userPrincipalName'];
         }
 
@@ -85,7 +86,11 @@ class AuthController extends Controller
         $user->$idField = $userData['id'];
         // Go through any other fields the config wants us to map
         foreach ($userFieldMap as $azureField => $userField) {
-            $user->$userField = $userData[$azureField];
+            if (isset($userData[$azureField])) {
+                $user->$userField = $userData[$azureField];
+            } else {
+                \Illuminate\Support\Facades\Log::info('createUserFromAzureData did not contain configured field '.$azureField.' in '.json_encode($userData));
+            }
         }
         // Save our newly minted user
         $user->save();

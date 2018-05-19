@@ -33,6 +33,7 @@ class ApiAuthController extends AuthController
                 $user = $this->identifyAndValidateAccessToken($accessToken);
             } catch (\Exception $e) {
                 \Illuminate\Support\Facades\Log::info('api auth token exception: '.$e->getMessage());
+                \Illuminate\Support\Facades\Log::debug($e->getFile().' line '.$e->getLine());
             }
         }
 
@@ -47,6 +48,7 @@ class ApiAuthController extends AuthController
         // identify the type of token
         $type = $this->identifyToken($token);
         // handle different types of tokens
+        \Illuminate\Support\Facades\Log::debug('api auth identified token type '.$type);
         switch ($type) {
             case 'app':
                 $user = $this->validateOauthCreateOrUpdateAzureApp($accessToken);
