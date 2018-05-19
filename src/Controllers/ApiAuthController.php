@@ -101,7 +101,6 @@ class ApiAuthController extends AuthController
                 'id'                => $appData->azp,
                 'displayName'       => $appData->azp,
                 'mail'              => $appData->azp,
-                'userPrincipalName' => '',
             ];
 
         // This is a laravel \App\User
