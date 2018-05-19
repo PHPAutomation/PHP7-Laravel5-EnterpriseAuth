@@ -114,7 +114,7 @@ class AuthController extends Controller
     public function loadClientCertFromWebserver()
     {
         // Make sure we got a client certificate from the web server
-        if (! isset($_SERVER['SSL_CLIENT_CERT']) || !$_SERVER['SSL_CLIENT_CERT']) {
+        if (! isset($_SERVER['SSL_CLIENT_CERT']) || ! $_SERVER['SSL_CLIENT_CERT']) {
             throw new \Exception('TLS client certificate missing');
         }
         // try to parse the certificate we got
