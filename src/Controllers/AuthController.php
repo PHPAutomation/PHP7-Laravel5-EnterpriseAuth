@@ -224,6 +224,7 @@ class AuthController extends Controller
         $remainingSecs = $expires - $now;
         // round up to the nearest minute
         $remainingMins = ceil($remainingSecs / 60);
+
         return $remainingMins;
     }
 }
