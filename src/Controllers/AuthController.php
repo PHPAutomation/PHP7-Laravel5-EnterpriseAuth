@@ -29,8 +29,10 @@ class AuthController extends Controller
 
         // Cache the users oauth accss token mapped to their user object for stuff and things
         $key = '/oauth/tokens/'.$accessToken;
-        // TODO: Replace static value 1440 with actual life of the oauth access token we got
-        \Cache::put($key, $user, 1440);
+        $remaining = $this->getTokenMinutesRemaining($accessToken);
+        \Illuminate\Support\Facades\Log::debug('oauth token cached for '.$remaining.' minutes');
+        // Cache the token until it expires
+        \Cache::put($key, $user, $remaining);
 
         return $user;
     }
@@ -198,5 +200,30 @@ class AuthController extends Controller
         }
 
         return $groupData;
+    }
+
+    // Try to unpack a jwt and get us the 3 chunks as assoc arrays so we can perform token identification
+    public function unpackJwt($jwt)
+    {
+        list($headb64, $bodyb64, $cryptob64) = explode('.', $jwt);
+        $token = [
+            'header'    => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($headb64), true),
+            'payload'   => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($bodyb64), true),
+            'signature' => $cryptob64,
+            ];
+
+        return $token;
+    }
+
+    // calculate the delta between $jwt['exp'] and time() / 60 for minutes remaining
+    protected function getTokenMinutesRemaining($accessToken)
+    {
+        $tokenData = $this->unpackJwt($accessToken);
+        $now = time();
+        $expires = $tokenData['payload']['exp'];
+        $remainingSecs = $expires - $now;
+        // round up to the nearest minute
+        $remainingMins = ceil($remainingSecs / 60);
+        return $remainingMins;
     }
 }
