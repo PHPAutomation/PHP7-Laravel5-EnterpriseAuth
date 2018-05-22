@@ -104,7 +104,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
  * )
  **/
 EOF;
-// *       "https://graph.microsoft.com/.default": "Use client_id: $client_id"
+            // *       "https://graph.microsoft.com/.default": "Use client_id: $client_id"
             file_put_contents($swaggerAzureadFile, $contents);
         }
     }
