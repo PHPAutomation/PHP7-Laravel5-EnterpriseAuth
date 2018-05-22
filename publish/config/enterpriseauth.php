@@ -26,7 +26,6 @@ return [
         'middleware'     => 'api',
         'authmiddleware' => 'auth:api',
         // and the routes
-        'login'              => 'api/login/microsoft',
         'myinfo'             => 'api/me',
         'myroles'            => 'api/me/roles',
         'myrolespermissions' => 'api/me/roles/permissions',
