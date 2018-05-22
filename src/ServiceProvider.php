@@ -99,11 +99,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
  *   authorizationUrl="$authorizationUrl",
  *   flow="implicit",
  *   scopes={
- *       "https://graph.microsoft.com/.default": "Use client_id: $client_id"
+ *       "api://$client_id/.default": "Use client_id: $client_id",
  *   }
  * )
  **/
 EOF;
+// *       "https://graph.microsoft.com/.default": "Use client_id: $client_id"
             file_put_contents($swaggerAzureadFile, $contents);
         }
     }

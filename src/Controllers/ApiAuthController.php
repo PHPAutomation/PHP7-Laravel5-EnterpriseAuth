@@ -49,10 +49,13 @@ class ApiAuthController extends AuthController
         // handle different types of tokens
         \Illuminate\Support\Facades\Log::debug('api auth identified token type '.$type);
         switch ($type) {
-            case 'app':
+            case 'azureapp':
                 $user = $this->validateOauthCreateOrUpdateAzureApp($accessToken);
                 break;
-            case 'user':
+            case 'azureuser':
+                $user = $this->validateOauthCreateOrUpdateAzureUser($accessToken);
+                break;
+            case 'graphuser':
                 $user = $this->validateOauthCreateOrUpdateUserAndGroups($accessToken);
                 break;
             default:
@@ -68,12 +71,23 @@ class ApiAuthController extends AuthController
         // start with an unidentified token type
         $type = 'unknown';
 
-        // If the token payload contains name or preferred_username then its a user
-        if (isset($token['payload']['name']) && isset($token['payload']['upn'])) {
-            $type = 'user';
-        // ELSE If the token uses OUR app id as the AUDience then its an app... probablly...
+        // If the token is for the graph API
+        if (isset($token['payload']['aud']) && $token['payload']['aud']== 'https://graph.microsoft.com') {
+            // and its a user
+            if (isset($token['payload']['name']) && isset($token['payload']['upn'])) {
+                $type = 'graphuser';
+            } else {
+                // This is entirely possible but I have no idea how to decode or validate it...
+            }
+        // If the token uses OUR app id as the AUDience then we dont need the graph api
         } elseif (isset($token['payload']['aud']) && $token['payload']['aud'] == config('enterpriseauth.credentials.client_id')) {
-            $type = 'app';
+            // users have names
+            if (isset($token['payload']['name']) && isset($token['payload']['preferred_username'])) {
+                $type = 'azureuser';
+            // apps do not?
+            } else {
+                $type = 'azureapp';
+            }
         }
 
         return $type;
@@ -86,13 +100,42 @@ class ApiAuthController extends AuthController
         $appData = $this->validateRSAToken($accessToken);
         // Find or create for azure app user object
         $userData = [
-                'id'                => $appData->azp,
-                'displayName'       => $appData->azp,
-                'mail'              => $appData->azp,
+                'id'                => $appData->oid,
+                'displayName'       => $appData->oid,
+                'mail'              => $appData->oid,
             ];
 
         // This is a laravel \App\User
         $user = $this->findOrCreateUser($userData);
+
+        // Cache the users oauth accss token mapped to their user object for stuff and things
+        $key = '/oauth/tokens/'.$accessToken;
+        $remaining = $this->getTokenMinutesRemaining($accessToken);
+        \Illuminate\Support\Facades\Log::debug('api auth token cached for '.$remaining.' minutes');
+        // Cache the token until it expires
+        \Cache::put($key, $user, $remaining);
+
+        return $user;
+    }
+
+    // This is called after an api auth gets intercepted and determined to be an app access token
+    public function validateOauthCreateOrUpdateAzureUser($accessToken)
+    {
+        // Perform the validation and get the payload
+        $appData = $this->validateRSAToken($accessToken);
+        // Find or create for azure app user object
+        $userData = [
+                'id'                => $appData->oid,
+                'displayName'       => $appData->name,
+                'mail'              => $appData->preferred_username,
+                'userPrincipalName' => $appData->preferred_username,
+            ];
+
+        // This is a laravel \App\User
+        $user = $this->findOrCreateUser($userData);
+
+        // Try to update the group/role membership for this user
+        $this->updateGroups($user);
 
         // Cache the users oauth accss token mapped to their user object for stuff and things
         $key = '/oauth/tokens/'.$accessToken;
