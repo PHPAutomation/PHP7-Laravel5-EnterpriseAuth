@@ -72,14 +72,14 @@ class ApiAuthController extends AuthController
         $type = 'unknown';
 
         // If the token is for the graph API
-        if (isset($token['payload']['aud']) && $token['payload']['aud']== 'https://graph.microsoft.com') {
+        if (isset($token['payload']['aud']) && $token['payload']['aud'] == 'https://graph.microsoft.com') {
             // and its a user
             if (isset($token['payload']['name']) && isset($token['payload']['upn'])) {
                 $type = 'graphuser';
             } else {
                 // This is entirely possible but I have no idea how to decode or validate it...
             }
-        // If the token uses OUR app id as the AUDience then we dont need the graph api
+            // If the token uses OUR app id as the AUDience then we dont need the graph api
         } elseif (isset($token['payload']['aud']) && $token['payload']['aud'] == config('enterpriseauth.credentials.client_id')) {
             // users have names
             if (isset($token['payload']['name']) && isset($token['payload']['preferred_username'])) {
