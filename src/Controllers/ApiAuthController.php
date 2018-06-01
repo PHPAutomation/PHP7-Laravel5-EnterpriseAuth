@@ -3,7 +3,6 @@
 namespace Metaclassing\EnterpriseAuth\Controllers;
 
 use Illuminate\Routing\Controller;
-use Laravel\Socialite\Facades\Socialite;
 
 class ApiAuthController extends AuthController
 {
