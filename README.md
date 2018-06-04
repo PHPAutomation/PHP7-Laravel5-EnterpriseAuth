@@ -156,29 +156,13 @@ auth()->user();
 
 ## Azure AD Application Registration
 1. Goto https://apps.dev.microsoft.com and create a new app.
-2. I am trying to work out the best enterprise app vs hybrid app, stay tuned for more.
-3. Profit.
-
-
-## OLD Azure AD Setup instructions (may be wrong)
-
-TL;DR - Have somebody execute the runbook in azure that creates a new aad app with unlimited key timeout and access to view user groups.
-
-Manual setup instructions:
-
-1. Navigate to `Azure Active Directory` -> `App registrations`.
-2. Create a new application
-  1. Choose a name
-  2. Select the "Web app / API" Application Type
-  3. Add the "Sign-on URL". This will typically be `https://domain.com/auth/login`
-  4. Click "Create"
-3. Click into the newly created app.
-4. The "Application ID" is what you will need for your `AZURE_AD_CLIENT_ID` env variable.
-5. Click into "Reply URLs". You will need to whitelist the redirection path for your app here. It will typically be `https://domain.com/login/microsoft/callback`. Click "Save"
-6. Select the permissions required for you app in the "Required permissions" tab.
-  1. requires read permissions for user info
-  2. add the graph API as a RESOURCE
-  3. requires read group permissions from the GRAPH API RESOURCE
-  4. click the GRANT button as a super duper global administrator
-8. In the "Keys" tab, enter a description (something like "App Secret"). Set Duration to "Never Expires". Click "Save". Copy the whole key. This will not show again. You will need this value for the `AZURE_AD_CLIENT_SECRET` env variable.
-over9000: there are some steps here missing to pre-authorize user access to the app and what permissions it has without prompting. It needs the ability to see all the users GROUP membership
+2. Create a new application secert (generate password) and save that with the app-id in your .env file
+3. Create a new Web platform with the following redirect URL's:
+    * https://myapp.mycompany.com/login/microsoft/callback (For thick-cookie-session browser login)
+    * https://myapp.mycompany.com/api/oauth2-callback (For swagger UI API docs login)
+4. Set the logout url if desired: https://myapp.mycompany.com/logout
+5. If you are doing app-to-app authentication, you may need a web API platform. The default access_as_user scope is fine for any client applications you authorize
+6. Default user permissions of user.read are fine, dont change anything
+7. Add application permission directory.read.all permission (admin only) is required if you want to see user group information
+8. To gain the authorization you need your azure AD admin to visit https://myapp.mycompany.com/login/microsoft/adminconsent and click ok.
+9. Dont forget to click save on everything.
