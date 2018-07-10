@@ -60,7 +60,10 @@ console.log('inside preload.js');
 
 // list of scopes we need to request a token for
 var APIScopes = [
-    "api://$client_id/.default"
+    // IF we are getting an access token for ourselves, just send the client id
+    "$client_id"
+    // IF we are getting an access token for ANOTHER app id, it needs to look like this
+    //"api://$client_id/.default"
 ];
 
 // client id and redirect uri for logging people in
