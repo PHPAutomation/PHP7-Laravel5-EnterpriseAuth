@@ -25,7 +25,7 @@ AZURE_AD_TENANT="MyAwesomeAzureADTenant"
 AZURE_AD_CLIENT_ID="1234abcd-12ab-34cd-56ef-123456abcdef"
 AZURE_AD_CLIENT_SECRET="123456789abcdef123456789abcdef\123456789abc="
 AZURE_AD_CALLBACK_URL="https://myapp.mycompany.com/login/microsoft/callback"
-# ^--- this one I will try to remove once I get the route named something sane.
+# ^--- this is the library callback for session based auth. you could use /ui/ for a single-page-app
 ```
 
 This is a dev package, your minimum stability must support this:
