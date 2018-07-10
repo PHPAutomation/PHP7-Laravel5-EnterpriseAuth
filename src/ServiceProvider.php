@@ -38,6 +38,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         // Trigger generating our swagger oauth security settings based on application env file contents
         $this->generateSwaggerOauthSecurityScheme();
+
+        //Register any CLI commands
+        $this->commands([Console\GenerateUIPreload::class]);
     }
 
     protected function checkMandatoryConfigsAreSet()
