@@ -40,11 +40,11 @@ class GenerateUIPreload extends Command
         $path = $this->option('destination');
         $path = reset($path);
         // otherwise use the default path
-        if(! $path) {
+        if (! $path) {
             $path = 'ui/preload.js';
         }
         // fully calculated path is APPDIR/public/ui/preload.js
-        return $base . '/' . $path;
+        return $base.'/'.$path;
     }
 
     public function generatePreloadJS($path)
@@ -52,7 +52,7 @@ class GenerateUIPreload extends Command
         $client_id = config('enterpriseauth.credentials.client_id');
         $callback_uri = config('enterpriseauth.credentials.callback_url');
 
-        $msauthjs = file_get_contents(__DIR__ . '/msauth.js');
+        $msauthjs = file_get_contents(__DIR__.'/msauth.js');
 
         // generate javascript file contents
         $contents = <<<EOF
