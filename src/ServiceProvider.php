@@ -102,7 +102,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
  *   authorizationUrl="$authorizationUrl",
  *   flow="implicit",
  *   scopes={
- *       "$client_id": "Use client_id: $client_id",
+ *       "api://$client_id/access_as_user": "Use client_id: $client_id",
  *   }
  * )
  **/
