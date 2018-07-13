@@ -49,6 +49,7 @@ class GenerateUIPreload extends Command
 
     public function generatePreloadJS($path)
     {
+        $app_url = config('app.url');
         $client_id = config('enterpriseauth.credentials.client_id');
         $callback_uri = config('enterpriseauth.credentials.callback_url');
 
@@ -57,6 +58,9 @@ class GenerateUIPreload extends Command
         // generate javascript file contents
         $contents = <<<EOF
 console.log('inside preload.js');
+
+// app url
+var globalUrl = $app_url; 
 
 // list of scopes we need to request a token for
 var APIScopes = [
