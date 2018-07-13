@@ -49,7 +49,7 @@ class GenerateUIPreload extends Command
 
     public function generatePreloadJS($path)
     {
-        $app_url = env('APP_URL');
+        $app_url = config('app.url');
         $client_id = config('enterpriseauth.credentials.client_id');
         $callback_uri = config('enterpriseauth.credentials.callback_url');
 
