@@ -60,7 +60,7 @@ class GenerateUIPreload extends Command
 console.log('inside preload.js');
 
 // app url
-var globalUrl = $app_url; 
+var globalUrl = "$app_url"; 
 
 // list of scopes we need to request a token for
 var APIScopes = [
