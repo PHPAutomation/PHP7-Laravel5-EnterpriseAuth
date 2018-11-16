@@ -60,7 +60,7 @@ class GenerateUIPreload extends Command
 console.log('inside preload.js');
 
 // app url
-var globalUrl = "$app_url"; 
+var globalUrl = "$app_url";
 
 // list of scopes we need to request a token for
 var APIScopes = [
@@ -73,7 +73,8 @@ var APIScopes = [
 // client id and redirect uri for logging people in
 var msalconfig = {
     clientID: "$client_id",
-    redirectUri: "$callback_uri"
+    redirectUri: "$callback_uri",
+    cacheLocation: "localStorage"
 };
 
 $msauthjs
