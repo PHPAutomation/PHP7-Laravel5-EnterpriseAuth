@@ -36,7 +36,7 @@ if (!userAgentApplication.isCallback(window.location.hash) && window.parent === 
     }
 } else {
     //console.log('window location hash is a valid callback ' + window.location.hash);
-    console.log('in case msal failed to redirect a newly authenticated user, we are doing it now ' + msalconfig.redirectUri)
+    console.log('in case msal failed to redirect a newly authenticated user, we are doing it now ' + msalconfig.redirectUri);
     window.location.href = msalconfig.redirectUri;
 }
 
