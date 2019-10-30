@@ -97,11 +97,20 @@ class ApiAuthController extends AuthController
     {
         // Perform the validation and get the payload
         $appData = $this->validateRSAToken($accessToken);
+        // Determine what property to use or explode
+        $prop = '';
+        if (property_exists($appData, 'oid')) {
+            $prop = 'oid';
+        } else if(property_exists($appData, 'azp')) {
+            $prop = 'azp';
+        } else {
+            throw new \Exception('Token data was valid but did not contain a known property to use for subject/caller');
+        }
         // Find or create for azure app user object
         $userData = [
-                'id'                => $appData->oid,
-                'displayName'       => $appData->oid,
-                'mail'              => $appData->oid,
+                'id'                => $appData->$prop,
+                'displayName'       => $appData->$prop,
+                'mail'              => $appData->$prop,
             ];
 
         // This is a laravel \App\User
