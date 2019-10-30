@@ -204,7 +204,7 @@ class AuthController extends Controller
     // Try to unpack a jwt and get us the 3 chunks as assoc arrays so we can perform token identification
     public function unpackJwt($jwt)
     {
-        list($headb64, $bodyb64, $cryptob64) = explode('.', $jwt);
+        [$headb64, $bodyb64, $cryptob64] = explode('.', $jwt);
         $token = [
             'header'    => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($headb64), true),
             'payload'   => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($bodyb64), true),

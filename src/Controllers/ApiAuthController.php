@@ -101,7 +101,7 @@ class ApiAuthController extends AuthController
         $prop = '';
         if (property_exists($appData, 'oid')) {
             $prop = 'oid';
-        } else if(property_exists($appData, 'azp')) {
+        } elseif (property_exists($appData, 'azp')) {
             $prop = 'azp';
         } else {
             throw new \Exception('Token data was valid but did not contain a known property to use for subject/caller');
