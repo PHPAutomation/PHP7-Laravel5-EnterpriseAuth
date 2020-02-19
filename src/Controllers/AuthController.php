@@ -180,7 +180,7 @@ class AuthController extends Controller
             try {
                 $user->assign($groups);
             } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::debug('unable to add user to groups ' . implode(',', $groups) . ' because' . $e->getMessage());
+                \Illuminate\Support\Facades\Log::debug('unable to add user to groups '.implode(',', $groups).' because'.$e->getMessage());
             }
         }
     }
@@ -215,7 +215,7 @@ class AuthController extends Controller
             'header'    => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($headb64), true),
             'payload'   => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($bodyb64), true),
             'signature' => $cryptob64,
-            ];
+        ];
 
         return $token;
     }

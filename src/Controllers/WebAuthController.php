@@ -127,7 +127,7 @@ class WebAuthController extends AuthController
                 'client_secret' => config('enterpriseauth.credentials.client_secret'),
                 'redirect_uri'  => config('enterpriseauth.credentials.callback_url'),
                 'grant_type'    => 'authorization_code',
-             ],
+            ],
         ];
         $response = $guzzle->post($url, $parameters);
         $responseObject = json_decode($response->getBody());

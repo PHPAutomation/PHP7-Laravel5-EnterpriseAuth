@@ -108,10 +108,10 @@ class ApiAuthController extends AuthController
         }
         // Find or create for azure app user object
         $userData = [
-                'id'                => $appData->$prop,
-                'displayName'       => $appData->$prop,
-                'mail'              => $appData->$prop,
-            ];
+            'id'                => $appData->$prop,
+            'displayName'       => $appData->$prop,
+            'mail'              => $appData->$prop,
+        ];
 
         // This is a laravel \App\User
         $user = $this->findOrCreateUser($userData);
@@ -133,11 +133,11 @@ class ApiAuthController extends AuthController
         $appData = $this->validateRSAToken($accessToken);
         // Find or create for azure app user object
         $userData = [
-                'id'                => $appData->oid,
-                'displayName'       => $appData->name,
-                'mail'              => $appData->preferred_username,
-                'userPrincipalName' => $appData->preferred_username,
-            ];
+            'id'                => $appData->oid,
+            'displayName'       => $appData->name,
+            'mail'              => $appData->preferred_username,
+            'userPrincipalName' => $appData->preferred_username,
+        ];
 
         // This is a laravel \App\User
         $user = $this->findOrCreateUser($userData);
