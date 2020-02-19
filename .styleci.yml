@@ -3,6 +3,7 @@ preset: laravel
 enabled:
  - align_double_arrow
  - new_with_braces
+ - long_list_syntax
 
 disabled:
  - no_unused_imports
