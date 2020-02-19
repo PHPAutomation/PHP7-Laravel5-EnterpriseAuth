@@ -166,6 +166,8 @@ class AuthController extends Controller
         foreach ($groupData as $info) {
             $groups[] = $info['displayName'];
         }
+        // make sure the array of groups is UNIQUE because stupid azuread names are not!
+        $groups = array_unique($groups);
 
         // If we have user group information from this oauth attempt
         if (count($groups)) {
@@ -174,8 +176,12 @@ class AuthController extends Controller
                ->where('entity_id', $user->id)
                ->where('entity_type', get_class($user))
                ->delete();
-            // add the user to each group they are assigned
-            $user->assign($groups);
+            // TRY to add the user to each group they are assigned
+            try {
+                $user->assign($groups);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::debug('unable to add user to groups ' . implode(',', $groups) . ' because' . $e->getMessage());
+            }
         }
     }
 
