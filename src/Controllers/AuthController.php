@@ -164,7 +164,11 @@ class AuthController extends Controller
         // Process group data into a list of displayNames we use as roles
         $groups = [];
         foreach ($groupData as $info) {
-            $groups[] = $info['displayName'];
+            // Now there are NEW kinds of awful groups where groupTypes => [Unified] is BAD.
+            // We only want to process groupTypes = [] (empty set evaluates to false)
+            if (isset($info['groupTypes']) && $info['groupTypes'] = false) {
+                $groups[] = $info['displayName'];
+            }
         }
         // make sure the array of groups is UNIQUE because stupid azuread names are not!
         $groups = array_unique($groups);
