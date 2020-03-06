@@ -10,7 +10,7 @@
         "silber/bouncer": "v1.0.0-rc.1",
         "owen-it/laravel-auditing": "^6.0",
         "zircote/swagger-php": "2.*",
-        "DarkaOnLine/L5-Swagger": "^5.5",
+        "darkaonline/l5-swagger": "^5.5",
         "firebase/php-jwt": "^5.0",
         "phpseclib/phpseclib": "^2.0"
     },
