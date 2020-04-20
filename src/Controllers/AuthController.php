@@ -166,14 +166,17 @@ class AuthController extends Controller
         foreach ($groupData as $info) {
             // Now there are NEW kinds of awful groups where groupTypes => [Unified] is BAD.
             // We only want to process groupTypes = [] (empty set evaluates to false)
-            if (isset($info['groupTypes']) && $info['groupTypes'] = false) {
+            if (isset($info['groupTypes']) && $info['groupTypes'] == false) {
                 $groups[] = $info['displayName'];
+            } else {
+                \Illuminate\Support\Facades\Log::debug('skipping grouptype named '.$info['displayName'].' grouptypes '.json_encode($info['groupTypes']));
             }
         }
         // make sure the array of groups is UNIQUE because stupid azuread names are not!
         $groups = array_unique($groups);
 
         // If we have user group information from this oauth attempt
+        \Illuminate\Support\Facades\Log::debug('assigning user to '.count($groups).' groups as roles');
         if (count($groups)) {
             // remove the users existing database roles before assigning new ones
             \DB::table('assigned_roles')
@@ -198,9 +201,13 @@ class AuthController extends Controller
         $graph = new \Microsoft\Graph\Graph();
         $graph->setAccessToken($accessToken);
         $path = '/users/'.$user->userPrincipalName.'/memberOf';
-        $groups = $graph->createRequest('GET', $path)
+//      $groups = $graph->createRequest('GET', $path)
+//      $graph->createCollectionRequest('GET', $path)->setReturnType(\Microsoft\Graph\Model\Group::class)->setPageSize(200)->execute();
+        $groups = $graph->createCollectionRequest('GET', $path)
                         ->setReturnType(\Microsoft\Graph\Model\Group::class)
+                        ->setPageSize(900)
                         ->execute();
+        \Illuminate\Support\Facades\Log::debug('azure ad returned '.count($groups).' groups for user');
 
         // Convert the microsoft graph group objects into data that is useful
         $groupData = [];
