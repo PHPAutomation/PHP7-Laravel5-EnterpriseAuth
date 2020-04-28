@@ -169,7 +169,7 @@ class AuthController extends Controller
             if (isset($info['groupTypes']) && $info['groupTypes'] == false) {
                 $groups[] = $info['displayName'];
             } else {
-                \Illuminate\Support\Facades\Log::debug('skipping grouptype named '.$info['displayName'].' grouptypes '.json_encode($info['groupTypes']));
+                \Illuminate\Support\Facades\Log::debug('skipping grouptype named '.$info['displayName'].' grouptypes '.json_encode($info));
             }
         }
         // make sure the array of groups is UNIQUE because stupid azuread names are not!
