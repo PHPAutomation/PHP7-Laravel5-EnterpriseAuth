@@ -200,9 +200,7 @@ class AuthController extends Controller
         // Use the app access token to get a given users group membership
         $graph = new \Microsoft\Graph\Graph();
         $graph->setAccessToken($accessToken);
-        $path = '/users/'.$user->userPrincipalName.'/memberOf';
-//      $groups = $graph->createRequest('GET', $path)
-//      $graph->createCollectionRequest('GET', $path)->setReturnType(\Microsoft\Graph\Model\Group::class)->setPageSize(200)->execute();
+        $path = '/users/'.$user->azure_id.'/transitiveMemberOf';
         $groups = $graph->createCollectionRequest('GET', $path)
                         ->setReturnType(\Microsoft\Graph\Model\Group::class)
                         ->setPageSize(900)
