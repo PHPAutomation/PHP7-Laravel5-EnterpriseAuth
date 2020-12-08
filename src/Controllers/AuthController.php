@@ -219,6 +219,13 @@ class AuthController extends Controller
     // Try to unpack a jwt and get us the 3 chunks as assoc arrays so we can perform token identification
     public function unpackJwt($jwt)
     {
+        // I had to add this custom error handling to deal with a very dumb client
+        $tokenparts = explode('.', $jwt);
+        if (count($tokenparts) != 3) {
+            throw new \Exception('Token format is not valid for JWT: '.$jwt);
+        }
+
+        // This was the original function...
         list($headb64, $bodyb64, $cryptob64) = explode('.', $jwt);
         $token = [
             'header'    => json_decode(\Firebase\JWT\JWT::urlsafeB64Decode($headb64), true),

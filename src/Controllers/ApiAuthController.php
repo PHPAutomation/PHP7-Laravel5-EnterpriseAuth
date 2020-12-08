@@ -217,6 +217,9 @@ class ApiAuthController extends AuthController
         $header = $request->headers->get('authorization');
         $regex = '/bearer\s+(\S+)/i';
         if ($header && preg_match($regex, $header, $matches)) {
+            if (!isset($matches[1])) {
+                throw new \Exception('Error parsing bearer token in header: '.$header);
+            }
             $oauthAccessToken = $matches[1];
         }
 
