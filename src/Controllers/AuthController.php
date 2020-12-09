@@ -22,7 +22,7 @@ class AuthController extends Controller
 
         // This is a laravel \App\User
         $user = $this->findOrCreateUser($userData);
-        \Illuminate\Support\Facades\Log::debug('oauth authentication for user '.$user->userPrincipalName);
+        \Illuminate\Support\Facades\Log::debug('oauth web authentication for user '.$user->userPrincipalName);
 
         // Try to update the group/role membership for this user
         $this->updateGroups($user);
