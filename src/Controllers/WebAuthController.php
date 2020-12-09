@@ -87,6 +87,11 @@ class WebAuthController extends AuthController
         if ($request->input('admin_consent')) {
             return 'Thank you';
         }
+        if ($request->input('error')) {
+            $error = $request->input('error');
+            $errorDescription = $request->input('error_description');
+            return 'Azure active directory returned an error: '.$error.' trying to sign you in with description '.$errorDescription;
+        }
         throw new \Exception('Unhandled oauth response');
     }
 
