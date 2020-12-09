@@ -115,6 +115,7 @@ class ApiAuthController extends AuthController
 
         // This is a laravel \App\User
         $user = $this->findOrCreateUser($userData);
+        \Illuminate\Support\Facades\Log::debug('oauth authentication for application '.$user->name);
 
         // Cache the users oauth accss token mapped to their user object for stuff and things
         $key = '/oauth/tokens/'.$accessToken;
