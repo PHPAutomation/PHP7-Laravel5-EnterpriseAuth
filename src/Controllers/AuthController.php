@@ -202,13 +202,13 @@ class AuthController extends Controller
         $graph = new \Microsoft\Graph\Graph();
         $graph->setAccessToken($accessToken);
         $path = '/users/'.$user->azure_id.'/transitiveMemberOf';
-// This old logic relied on setPageSize which APPARENTLY no longer works!
-/*
-        $groups = $graph->createCollectionRequest('GET', $path)
-                        ->setReturnType(\Microsoft\Graph\Model\Group::class)
-                        ->setPageSize(100)
-                        ->execute();
-/**/
+        // This old logic relied on setPageSize which APPARENTLY no longer works!
+        /*
+                $groups = $graph->createCollectionRequest('GET', $path)
+                                ->setReturnType(\Microsoft\Graph\Model\Group::class)
+                                ->setPageSize(100)
+                                ->execute();
+        /**/
         $groups = [];
         // create a graph api group iterator for the collection
         $groupIterator = $graph->createCollectionRequest('GET', $path)
