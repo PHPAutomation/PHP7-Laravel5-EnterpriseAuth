@@ -216,7 +216,12 @@ class AuthController extends Controller
                                ->setPageSize(100);
         // and get all the groups by page one set of 100 at a time
         while (! $groupIterator->isEnd()) {
-            $groups = array_merge($groups, $groupIterator->getPage());
+            $page = $groupIterator->getPage();
+            if (! is_array($page)) {
+                break;
+//              throw new \Exception('Group iterator is not an array, it is this thing: '.json_encode($page));
+            }
+            $groups = array_merge($groups, $page);
         }
 
         \Illuminate\Support\Facades\Log::debug('azure ad returned '.count($groups).' groups for user');
